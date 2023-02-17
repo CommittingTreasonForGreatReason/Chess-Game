@@ -66,9 +66,20 @@ public abstract class Piece extends DrawableObject{
 	    }
 	}
 	
-	public abstract void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing);
+	public abstract void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells);
 	
-	protected abstract int[] calculateLimits(BoardCell[][] boardCells, boolean ignoreKing);
+	protected abstract int[] calculateLimits(BoardCell[][] boardCells);
+	
+	protected void simulateMove(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, BoardCell moveBoardCell) {
+	    GameLogic.lastMovePiece = (Piece) this;
+        GameLogic.lastMoveBoardCell = this.getBoardCell();
+        GameLogic.lastRemovedPiece = moveBoardCell.getPiece();
+        movePiece(moveBoardCell);
+        if(!GameLogic.getGameLogicInstance().isCheck(player,true)) {
+            addPossibleMoveBoardCell(possibleMoveBoardCells, moveBoardCell);
+        }
+        GameLogic.reverseLastMove();
+	}
 	
 	protected int newBestLimit(int oldLimit, int newLimit) {
 	    if(oldLimit > newLimit) {

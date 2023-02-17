@@ -18,12 +18,12 @@ public class Bishop extends Piece{
 	}
 
 	@Override
-	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing) {
-	    int[] limits = calculateLimits(boardCells,ignoreKing);
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
+	    int[] limits = calculateLimits(boardCells);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
             for (int j = 0;j<8;j++) {
-                if(!boardCells[i][j].hasPiece() || boardCells[i][j].hasPiece() && (!this.isSameColor(boardCells[i][j].getPiece()) || ignoreKing)) {
+                if(!boardCells[i][j].hasPiece() || boardCells[i][j].hasPiece() && !this.isSameColor(boardCells[i][j].getPiece())) {
                     for(int k = -8;k<8;k++) {
                         if((row+k == i || row-k == i) && (column+k == j || column-k == j)) {
                             if(boardCell.isAbove(boardCells[i][j])) {
@@ -55,7 +55,7 @@ public class Bishop extends Piece{
 	}
 
     @Override
-    protected int[] calculateLimits(BoardCell[][] boardCells, boolean ignoreKing) {
+    protected int[] calculateLimits(BoardCell[][] boardCells) {
         // formatted like this [aboveRightRow,aboveRightColumn,aboveLeftRow,aboveLeftColumn,belowRightRow,belowRightColumn,belowLeftRow,belowLeftColumn]
         int[] limits = {100,100,100,100,100,100,100,100};
         int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
@@ -66,9 +66,6 @@ public class Bishop extends Piece{
                 for(int k = -8;k<8;k++) {
                     if(boardCells[i][j] == boardCell || !boardCells[i][j].hasPiece()) {
                         continue;
-                    }
-                    if(ignoreKing && boardCells[i][j].hasPiece() && boardCells[i][j].getPiece() instanceof King) {
-                        continue; 
                     }
                     if((row+k == i || row-k == i) && (column+k == j || column-k == j)) {
                         if(boardCell.isAbove(boardCells[i][j])) {

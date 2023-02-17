@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import ChessGroup.Chess.Constants;
 import ChessGroup.Chess.GUIController;
 import ChessGroup.Chess.GameLogic;
+import PieceStuff.Piece;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
@@ -94,6 +95,14 @@ public class Board extends DrawableObject{
 		ArrayList<BoardCell> allPossibleMoveBoardCells = GameLogic.getAllPossibleMoveBoardCells();
         for(BoardCell allPossibleMoveBoardCell : allPossibleMoveBoardCells) {
             allPossibleMoveBoardCell.drawAllPossibleMove(gc);
+        }
+        ArrayList<Piece> blackPieces = GameLogic.getBlackPieces();
+        for(Piece piece : blackPieces) {
+            piece.draw(gc);
+        }
+        ArrayList<Piece> whitePieces = GameLogic.getWhitePieces();
+        for(Piece piece : whitePieces) {
+            piece.draw(gc);
         }
 	}
 	

@@ -62,7 +62,7 @@ public class BoardCell extends DrawableObject{
 	    thisPiece.setBoardCell(boardCell);
 	    thisPiece.repositionGeometryOnResize();
 	    if(boardCell.hasPiece()) {
-	      GameLogic.getGameLogicInstance().removePiece(boardCell.getPiece());  
+	        GameLogic.removePiece(boardCell.getPiece());
 	    }
 	    this.setPiece(null);
 	    boardCell.setPiece(thisPiece);
@@ -93,9 +93,6 @@ public class BoardCell extends DrawableObject{
 	public void draw(GraphicsContext gc) {
 		gc.setFill(baseColor);
 		gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
-		if(piece != null) {
-			piece.draw(gc);
-		}
 		gc.setFill(Color.RED);
         gc.setFont(new Font("Arial", 15));
         gc.fillText(row+"/"+column, centerPoint.getX()+size/2-gc.getFont().getSize()*2, centerPoint.getY()+size/2-gc.getFont().getSize());

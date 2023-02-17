@@ -18,13 +18,13 @@ public class Queen extends Piece{
 	}
 
 	@Override
-	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing) {
-	    int[] limitsDiagonal = calculateLimits(boardCells,ignoreKing);
-	    int[] limitsLinear = calculateLimits(boardCells,ignoreKing);
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
+	    int[] limitsDiagonal = calculateLimits(boardCells);
+	    int[] limitsLinear = calculateLimits(boardCells);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
             for (int j = 0;j<8;j++) {
-                if(!boardCells[i][j].hasPiece() || boardCells[i][j].hasPiece()  && (!this.isSameColor(boardCells[i][j].getPiece()) || ignoreKing)) {
+                if(!boardCells[i][j].hasPiece() || boardCells[i][j].hasPiece()  && !this.isSameColor(boardCells[i][j].getPiece())) {
                     // add diagonal possible moves
                     for(int k = -8;k<8;k++) {
                         if((row+k == i || row-k == i) && (column+k == j || column-k == j)) {
@@ -63,7 +63,7 @@ public class Queen extends Piece{
 	}
 
     @Override
-    protected int[] calculateLimits(BoardCell[][] boardCells, boolean ignoreKing) {
+    protected int[] calculateLimits(BoardCell[][] boardCells) {
         // formatted like this [aboveRightRow,aboveRightColumn,aboveLeftRow,aboveLeftColumn,belowRightRow,belowRightColumn,belowLeftRow,belowLeftColumn,
         // above,below,right,left]
         int[] limits = {100,100,100,100,100,100,100,100,100,100,100,100};
@@ -74,9 +74,6 @@ public class Queen extends Piece{
                 int limitColumn = boardCells[i][j].getColumnDistance(boardCell);
                 if(boardCells[i][j] == boardCell || !boardCells[i][j].hasPiece()) {
                     continue;
-                }
-                if(ignoreKing && boardCells[i][j].hasPiece() && boardCells[i][j].getPiece() instanceof King) {
-                    continue; 
                 }
                 // calculate diagonal limits
                 for(int k = -8;k<8;k++) {

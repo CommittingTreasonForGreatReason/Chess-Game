@@ -32,8 +32,8 @@ public class Pawn extends Piece{
     }
 
 	@Override
-	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing) {
-	    int[] limits = calculateLimits(boardCells,ignoreKing);
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
+	    int[] limits = calculateLimits(boardCells);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
     		for (int j = 0;j<8;j++) {
@@ -66,7 +66,7 @@ public class Pawn extends Piece{
 	}
 
     @Override
-    protected int[] calculateLimits(BoardCell[][] boardCells, boolean ignoreKing) {
+    protected int[] calculateLimits(BoardCell[][] boardCells) {
      // formatted like this [above,below]
         int[] limits = {100,100};
         for (int i = 0;i<8;i++) {

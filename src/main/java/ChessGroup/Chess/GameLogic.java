@@ -36,6 +36,13 @@ public class GameLogic {
     	board = Board.getBoardInstance();
     }
     
+    public static ArrayList<Piece> getBlackPieces() {
+        return blackPieces;
+    }
+    public static ArrayList<Piece> getWhitePieces() {
+        return whitePieces;
+    }
+    
     public static BoardCell getSelectedBoardCell() {
 		return selectedBoardCell;
 	}
@@ -59,7 +66,7 @@ public class GameLogic {
         return gameLogic;
     }
     
-    public void removePiece(Piece piece) {
+    public static void removePiece(Piece piece) {
         removedPieces.add(piece);
         if(piece.isBlack()) {
             blackPieces.remove(piece);
@@ -68,8 +75,9 @@ public class GameLogic {
         }
     }
     
-    private void addPiece(Piece piece) {
+    private static void addPiece(Piece piece) {
     	piece.getBoardCell().setPiece(piece);
+    	removedPieces.remove(piece);
     	if(piece.isBlack()) {
             blackPieces.add(piece);
         }else {
@@ -112,18 +120,19 @@ public class GameLogic {
     	selectedBoardCell = boardCell;
     }
     
-    public void reverseLastMove() {
+    public static void reverseLastMove() {
         BoardCell lastMovePieceCurrentBoardCell = lastMovePiece.getBoardCell();
-        lastMovePiece.getBoardCell().movePieceTo(lastMoveBoardCell);
+        lastMovePiece.movePiece(lastMoveBoardCell);
+        if(lastRemovedPiece != null) {
+            addPiece(lastRemovedPiece);
+            System.out.println("removedPieces.size()="+removedPieces.size());
+        }
         lastMovePieceCurrentBoardCell.setPiece(lastRemovedPiece);
+        
         if(lastMovePiece instanceof Pawn) {
             ((Pawn)lastMovePiece).reverseMovedOnceStatus();
         }
-        if(lastRemovedPiece != null) {
-            addPiece(lastRemovedPiece);
-            lastRemovedPiece.movePiece(lastMovePieceCurrentBoardCell);
-            removedPieces.remove(removedPieces.get(removedPieces.size()-1));
-        }
+        
         lastMoveBoardCell = null;
         lastRemovedPiece = null;
         lastRemovedPiece = null;
@@ -147,7 +156,7 @@ public class GameLogic {
             if(ignoreKing && piece instanceof King) {
                 continue;
             }
-            piece.setPossibleMoveBoardCells(board.getBoardCells(), allPossibleMoveBoardCells,false);
+            piece.setPossibleMoveBoardCells(board.getBoardCells(), allPossibleMoveBoardCells);
         }
         for(BoardCell boardCell : allPossibleMoveBoardCells) {
             if(boardCell.hasPiece() && boardCell.getPiece() instanceof King && boardCell.getPiece().isSameColor(player)) {
@@ -169,7 +178,7 @@ public class GameLogic {
         }
         for (Piece piece : otherTeamPieces) {
             piecePossibleMoveBoardCells.clear();
-                piece.setPossibleMoveBoardCells(board.getBoardCells(), piecePossibleMoveBoardCells,false);
+                piece.setPossibleMoveBoardCells(board.getBoardCells(), piecePossibleMoveBoardCells);
                 for(BoardCell boardCell : piecePossibleMoveBoardCells) {
                     if(boardCell.hasPiece() && boardCell.getPiece() instanceof King && boardCell.getPiece().isSameColor(player)) {
                         responsiblePieces.add(piece);
@@ -181,9 +190,11 @@ public class GameLogic {
     }
     
     private void printPieces(ArrayList<Piece> pieces) {
+        System.out.println("_________________________________________");
         for(Piece piece : pieces) {
             System.out.println(piece);
         }
+        System.out.println("_________________________________________");
     }
     
     private void printResponsiblePieces(Player player) {
@@ -206,9 +217,10 @@ public class GameLogic {
     	    if(tryMovePiece(clickedBoardCell)){
     	        toggleTurns();
     	        Player newTurningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
-    	        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(newTurningPlayer,false),newTurningPlayer);
-//    	        printPieces(removedPieces);
-    	        printResponsiblePieces(newTurningPlayer);
+    	        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(newTurningPlayer,true),newTurningPlayer);
+    	        printPieces(removedPieces);
+    	        System.out.println(blackPieces.size()+whitePieces.size());
+    	        isCheck(whitePlayer.hasTurn()?blackPlayer:whitePlayer,true);
     	    }
     	}
     	possibleMoveBoardCells.clear(); 
@@ -221,7 +233,7 @@ public class GameLogic {
             Piece selectedPiece = clickedBoardCell.getPiece();
             selectBoardCell(clickedBoardCell);
             possibleMoveBoardCells.clear(); 
-            selectedPiece.setPossibleMoveBoardCells(board.getBoardCells(), possibleMoveBoardCells,false);
+            selectedPiece.setPossibleMoveBoardCells(board.getBoardCells(), possibleMoveBoardCells);
             return true;
         }
         return false;
