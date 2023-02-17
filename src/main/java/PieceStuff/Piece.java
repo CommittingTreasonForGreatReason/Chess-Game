@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import BoardStuff.BoardCell;
 import BoardStuff.DrawableObject;
 import ChessGroup.Chess.Constants;
+import ChessGroup.Chess.GameLogic;
 import ChessGroup.Chess.Player;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public abstract class Piece extends DrawableObject{
@@ -16,12 +16,12 @@ public abstract class Piece extends DrawableObject{
 	protected String name;
 	protected BoardCell boardCell;
 	private static Font font = new Font("Arial",60);
-	private boolean isBlack;
+	protected Player player;
 
-	public Piece(Color baseColor, BoardCell boardCell) {
-		super(baseColor, new Point2D(boardCell.centerPoint.getX(),boardCell.centerPoint.getY()));
+	public Piece(Player player, BoardCell boardCell) {
+		super(player.isBlack()?Constants.blackColorPiece:Constants.whiteColorPiece, new Point2D(boardCell.centerPoint.getX(),boardCell.centerPoint.getY()));
 		this.boardCell = boardCell;
-		this.isBlack = baseColor == Constants.blackColorPiece;
+		this.player = player;
 	}
 	
 	public void setBoardCell(BoardCell boardCell) {
@@ -33,15 +33,15 @@ public abstract class Piece extends DrawableObject{
 	}
 	
 	public boolean isBlack() {
-		return isBlack;
+		return player.isBlack();
 	}
 	
 	public boolean isSameColor(Piece piece) {
-	    return this.isBlack == piece.isBlack;
+	    return this.isBlack() == piece.isBlack();
 	}
 	
 	public boolean isSameColor(Player player) {
-        return this.isBlack == player.isBlack();
+        return this.isBlack() == player.isBlack();
     }
 	
 	@Override
@@ -57,13 +57,7 @@ public abstract class Piece extends DrawableObject{
 	}
 	
 	public void movePiece(BoardCell clickedBoardCell) {
-	    if(clickedBoardCell.hasPiece()) {
-	        if(!this.isSameColor(clickedBoardCell.getPiece())) {
-	            boardCell.movePieceTo(clickedBoardCell);
-	        }
-	    }else {
-	        boardCell.movePieceTo(clickedBoardCell);
-	    }
+	    boardCell.movePieceTo(clickedBoardCell);
 	}
 	
 	protected void addPossibleMoveBoardCell(ArrayList<BoardCell> possibleMoveBoardCells, BoardCell boardCell) {
@@ -72,9 +66,9 @@ public abstract class Piece extends DrawableObject{
 	    }
 	}
 	
-	public abstract void setpossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells);
+	public abstract void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing);
 	
-	protected abstract int[] calculateLimits(BoardCell[][] boardCells);
+	protected abstract int[] calculateLimits(BoardCell[][] boardCells, boolean ignoreKing);
 	
 	protected int newBestLimit(int oldLimit, int newLimit) {
 	    if(oldLimit > newLimit) {
@@ -85,6 +79,6 @@ public abstract class Piece extends DrawableObject{
 	
 	@Override
 	public String toString() {
-	    return isBlack?"black ":"white " + name + " Piece:\nstanding on " + boardCell.toString();
+	    return "--------------------------------\n"+ (isBlack()?"black ":"white ") + name + " Piece:\nstanding on " + boardCell.toString();
 	}
 }

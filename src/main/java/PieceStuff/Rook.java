@@ -3,12 +3,12 @@ package PieceStuff;
 import java.util.ArrayList;
 
 import BoardStuff.BoardCell;
-import javafx.scene.paint.Color;
+import ChessGroup.Chess.Player;
 
 public class Rook extends Piece{
 
-	public Rook(Color baseColor, BoardCell boardCell) {
-		super(baseColor, boardCell);
+	public Rook(Player player, BoardCell boardCell) {
+		super(player, boardCell);
 		this.name = "r";
 	}
 
@@ -18,12 +18,12 @@ public class Rook extends Piece{
 	}
 
 	@Override
-	public void setpossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
-	    int[] limits = calculateLimits(boardCells);
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing) {
+	    int[] limits = calculateLimits(boardCells,ignoreKing);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
             for (int j = 0;j<8;j++) {
-                if(!boardCells[i][j].hasPiece() || boardCells[i][j].hasPiece() && !this.isSameColor(boardCells[i][j].getPiece())) {
+                if(!boardCells[i][j].hasPiece()|| boardCells[i][j].hasPiece() && (!this.isSameColor(boardCells[i][j].getPiece()) || ignoreKing)) {
                     if((i <= row+limits[1] && i >= row-limits[0] && j == column)) {
                         addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
                     }else if((j <= column+limits[2] && j >= column-limits[3] && i == row)) {
@@ -35,12 +35,18 @@ public class Rook extends Piece{
 	}
 
     @Override
-    protected int[] calculateLimits(BoardCell[][] boardCells) {
+    protected int[] calculateLimits(BoardCell[][] boardCells, boolean ignoreKing) {
         // formatted like this [above,below,right,left]
         int[] limits = {100,100,100,100};
         for (int i = 0;i<8;i++) {
             for (int j = 0;j<8;j++) {
-                if((i == boardCell.getRow() || j == boardCell.getColumn()) && boardCells[i][j] != boardCell && boardCells[i][j].hasPiece()) {
+                if(boardCells[i][j] == boardCell || !boardCells[i][j].hasPiece()) {
+                    continue;
+                }
+                if(ignoreKing && boardCells[i][j].hasPiece() && boardCells[i][j].getPiece() instanceof King) {
+                    continue; 
+                }
+                if((i == boardCell.getRow() || j == boardCell.getColumn())) {
                     int limitRow = boardCells[i][j].getRowDistance(boardCell);
                     int limitColumn = boardCells[i][j].getColumnDistance(boardCell);
                     if(boardCell.isAbove(boardCells[i][j])) {

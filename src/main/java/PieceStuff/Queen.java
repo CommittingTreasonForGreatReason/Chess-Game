@@ -3,12 +3,12 @@ package PieceStuff;
 import java.util.ArrayList;
 
 import BoardStuff.BoardCell;
-import javafx.scene.paint.Color;
+import ChessGroup.Chess.Player;
 
 public class Queen extends Piece{
 
-	public Queen(Color baseColor, BoardCell boardCell) {
-		super(baseColor, boardCell);
+	public Queen(Player player, BoardCell boardCell) {
+		super(player, boardCell);
 		this.name = "Q";
 	}
 
@@ -18,14 +18,13 @@ public class Queen extends Piece{
 	}
 
 	@Override
-	public void setpossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
-	    int[] limitsDiagonal = calculateLimits(boardCells);
-	    int[] limitsLinear = calculateLimits(boardCells);
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing) {
+	    int[] limitsDiagonal = calculateLimits(boardCells,ignoreKing);
+	    int[] limitsLinear = calculateLimits(boardCells,ignoreKing);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
             for (int j = 0;j<8;j++) {
-                if(!boardCells[i][j].hasPiece() || boardCells[i][j].hasPiece() && !this.isSameColor(boardCells[i][j].getPiece())) {
-                    
+                if(!boardCells[i][j].hasPiece() || boardCells[i][j].hasPiece()  && (!this.isSameColor(boardCells[i][j].getPiece()) || ignoreKing)) {
                     // add diagonal possible moves
                     for(int k = -8;k<8;k++) {
                         if((row+k == i || row-k == i) && (column+k == j || column-k == j)) {
@@ -64,7 +63,7 @@ public class Queen extends Piece{
 	}
 
     @Override
-    protected int[] calculateLimits(BoardCell[][] boardCells) {
+    protected int[] calculateLimits(BoardCell[][] boardCells, boolean ignoreKing) {
         // formatted like this [aboveRightRow,aboveRightColumn,aboveLeftRow,aboveLeftColumn,belowRightRow,belowRightColumn,belowLeftRow,belowLeftColumn,
         // above,below,right,left]
         int[] limits = {100,100,100,100,100,100,100,100,100,100,100,100};
@@ -73,9 +72,15 @@ public class Queen extends Piece{
             for (int j = 0;j<8;j++) {
                 int limitRow = boardCells[i][j].getRowDistance(boardCell);
                 int limitColumn = boardCells[i][j].getColumnDistance(boardCell);
+                if(boardCells[i][j] == boardCell || !boardCells[i][j].hasPiece()) {
+                    continue;
+                }
+                if(ignoreKing && boardCells[i][j].hasPiece() && boardCells[i][j].getPiece() instanceof King) {
+                    continue; 
+                }
                 // calculate diagonal limits
                 for(int k = -8;k<8;k++) {
-                    if((row+k == i || row-k == i) && (column+k == j || column-k == j) && boardCells[i][j] != boardCell && boardCells[i][j].hasPiece()) {
+                    if((row+k == i || row-k == i) && (column+k == j || column-k == j)) {
                         if(boardCell.isAbove(boardCells[i][j])) {
                             if(boardCell.isRight(boardCells[i][j])) {
                                 limits[0] = newBestLimit(limits[0], limitRow);

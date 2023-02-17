@@ -3,15 +3,15 @@ package PieceStuff;
 import java.util.ArrayList;
 
 import BoardStuff.BoardCell;
-import javafx.scene.paint.Color;
+import ChessGroup.Chess.Player;
 
 public class Pawn extends Piece{
 	
 	private boolean movedOnce = false;
 	private boolean lastMovedOnceStatus = false;
 
-	public Pawn(Color baseColor, BoardCell boardCell) {
-		super(baseColor, boardCell);
+	public Pawn(Player player, BoardCell boardCell) {
+		super(player, boardCell);
 		this.name = "p";
 	}
 	
@@ -32,8 +32,8 @@ public class Pawn extends Piece{
     }
 
 	@Override
-	public void setpossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
-	    int[] limits = calculateLimits(boardCells);
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing) {
+	    int[] limits = calculateLimits(boardCells,ignoreKing);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
     		for (int j = 0;j<8;j++) {
@@ -66,7 +66,7 @@ public class Pawn extends Piece{
 	}
 
     @Override
-    protected int[] calculateLimits(BoardCell[][] boardCells) {
+    protected int[] calculateLimits(BoardCell[][] boardCells, boolean ignoreKing) {
      // formatted like this [above,below]
         int[] limits = {100,100};
         for (int i = 0;i<8;i++) {

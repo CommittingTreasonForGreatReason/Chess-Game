@@ -3,12 +3,13 @@ package PieceStuff;
 import java.util.ArrayList;
 
 import BoardStuff.BoardCell;
-import javafx.scene.paint.Color;
+import ChessGroup.Chess.GameLogic;
+import ChessGroup.Chess.Player;
 
 public class King extends Piece{
 
-	public King(Color baseColor, BoardCell boardCell) {
-		super(baseColor, boardCell);
+	public King(Player player, BoardCell boardCell) {
+		super(player, boardCell);
 		this.name = "K";
 	}
 
@@ -18,12 +19,27 @@ public class King extends Piece{
 	}
 
 	@Override
-	public void setpossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean ignoreKing) {
+	    ArrayList<BoardCell> possibleMoveBoardCellsOtherTeam = new ArrayList<BoardCell>();
+	    for(Piece piece: GameLogic.getTeamPieces(!this.isBlack())) {
+	        if(!(piece instanceof King)) {
+	            piece.setPossibleMoveBoardCells(boardCells, possibleMoveBoardCellsOtherTeam,true);
+	        }
+	    }
 		for (int i = 0;i<8;i++) {
     		for (int j = 0;j<8;j++) {
 				if(i >= boardCell.getRow()-1 && i <= boardCell.getRow()+1 && j >= boardCell.getColumn()-1 && j <= boardCell.getColumn()+1) {
 	    			if(!boardCells[i][j].hasPiece() || boardCells[i][j].hasPiece() && !this.isSameColor(boardCells[i][j].getPiece())) {
-	    			    addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+	    			    if(!possibleMoveBoardCellsOtherTeam.contains(boardCells[i][j])) {
+	    			        GameLogic.lastMovePiece = (Piece) this;
+	    		            GameLogic.lastMoveBoardCell = this.getBoardCell();
+	    		            GameLogic.lastRemovedPiece = boardCells[i][j].getPiece();
+	    		            movePiece(boardCells[i][j]);
+	    			        if(!GameLogic.getGameLogicInstance().isCheck(player,true)) {
+	    			            addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+	    			        }
+	    			        GameLogic.getGameLogicInstance().reverseLastMove();
+	    			    }
 	    			}
 	    		}
     		}
@@ -31,7 +47,7 @@ public class King extends Piece{
 	}
 
     @Override
-    protected int[] calculateLimits(BoardCell[][] boardCells) {
+    protected int[] calculateLimits(BoardCell[][] boardCells,boolean ignoreKing) {
         return null;
     }
 	

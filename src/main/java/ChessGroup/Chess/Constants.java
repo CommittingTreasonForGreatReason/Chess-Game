@@ -11,6 +11,6 @@ public interface Constants {
 	public static Color whiteColorPiece = new Color(230/255.0,230/255.0,230/255.0,1);
 	
 	public static Color redColor = new Color(255/255.0,20/255.0,20/255.0,1);
-	public static Color redTransparentColor = new Color(255/255.0,20/255.0,20/255.0,0.4);
-	public static Color greenTransparentColor = new Color(20/255.0,255/255.0,20/255.0,0.4);
+	public static Color redTransparentColor = new Color(255/255.0,20/255.0,20/255.0,0.2);
+	public static Color greenTransparentColor = new Color(20/255.0,255/255.0,20/255.0,0.2);
 }
