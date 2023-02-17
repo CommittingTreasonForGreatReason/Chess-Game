@@ -7,6 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 
 public class BoardCell extends DrawableObject{
 	private int row,column;
@@ -95,6 +96,9 @@ public class BoardCell extends DrawableObject{
 		if(piece != null) {
 			piece.draw(gc);
 		}
+		gc.setFill(Color.RED);
+        gc.setFont(new Font("Arial", 15));
+        gc.fillText(row+"/"+column, centerPoint.getX()+size/2-gc.getFont().getSize()*2, centerPoint.getY()+size/2-gc.getFont().getSize());
 	}
 	
 	public void drawSelected(GraphicsContext gc) {
@@ -120,7 +124,7 @@ public class BoardCell extends DrawableObject{
 	}
 	
 	public String toString() {
-	    return "BoardCell at: (Row/Column) = (" + row + "/" + column + ")";
+	    return "BoardCell at:\n(Row/Column) = (" + row + "/" + column + ")";
 	}
 	
 }

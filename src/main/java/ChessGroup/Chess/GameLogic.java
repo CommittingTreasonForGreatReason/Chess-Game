@@ -12,9 +12,13 @@ import PieceStuff.Piece;
 import PieceStuff.Queen;
 import PieceStuff.Rook;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyEvent;
 
 public class GameLogic {
-	private ArrayList<Piece> pieces = new ArrayList<Piece>();
+	private static ArrayList<Piece> pieces = new ArrayList<Piece>();
+	private static ArrayList<Piece> removedPieces = new ArrayList<Piece>();
+	private static Piece lastMovePiece;
+	private static BoardCell lastMoveBoardCell;
 	
 	// singleton instance
     private static GameLogic gameLogic;
@@ -25,7 +29,7 @@ public class GameLogic {
     private static ArrayList<BoardCell> possibleMoveBoardCells = new ArrayList<BoardCell>();
     private static ArrayList<BoardCell> allPossibleMoveBoardCells = new ArrayList<BoardCell>();
     
-    Player blackPlayer,whitePlayer;
+    static Player blackPlayer,whitePlayer;
     
     public GameLogic() {
     	board = Board.getBoardInstance();
@@ -51,12 +55,13 @@ public class GameLogic {
     }
     
     public void removePiece(Piece piece) {
-        GameLogic.getGameLogicInstance().pieces.remove(piece);
+        removedPieces.add(piece);
+        pieces.remove(piece);
     }
     
     private void addPiece(Piece piece) {
     	piece.getBoardCell().setPiece(piece);
-    	GameLogic.getGameLogicInstance().pieces.add(piece);
+    	pieces.add(piece);
     }
     
     public void initPlayers(boolean blackHasTurn) {
@@ -94,6 +99,28 @@ public class GameLogic {
     	selectedBoardCell = boardCell;
     }
     
+    private void reverseLastMove() {
+        BoardCell lastMovePieceCurrentBoardCell = lastMovePiece.getBoardCell();
+        lastMovePiece.getBoardCell().movePieceTo(lastMoveBoardCell);
+        if(lastMovePiece instanceof Pawn) {
+            ((Pawn)lastMovePiece).reverseMovedOnceStatus();
+        }
+        Piece lastRemovedPiece = null;
+        if(removedPieces.size()>0) {
+            lastRemovedPiece = removedPieces.get(removedPieces.size()-1);
+        }
+        lastMovePieceCurrentBoardCell.setPiece(lastRemovedPiece);
+        if(lastRemovedPiece != null) {
+            addPiece(lastRemovedPiece);
+            lastRemovedPiece.movePiece(lastMovePieceCurrentBoardCell);
+            removedPieces.remove(lastRemovedPiece);
+        }
+        
+        lastMovePiece = null;
+        lastMoveBoardCell = null;
+        toggleTurns();
+    }
+    
     private void toggleTurns() {
         blackPlayer.toggleTurn();
         whitePlayer.toggleTurn();
@@ -102,7 +129,7 @@ public class GameLogic {
     
     private boolean isCheck(Player player) {
         allPossibleMoveBoardCells.clear(); 
-        for (Piece piece : GameLogic.getGameLogicInstance().pieces) {
+        for (Piece piece : pieces) {
             if(!piece.isSameColor(player)) {
                 piece.setpossibleMoveBoardCells(board.getBoardCells(), allPossibleMoveBoardCells);
             }
@@ -113,6 +140,12 @@ public class GameLogic {
             }
         }
         return false;
+    }
+    
+    private void printPieces(ArrayList<Piece> pieces) {
+        for(Piece piece : pieces) {
+            System.out.println(piece);
+        }
     }
     
     private void tryClickBoardCell(Point2D mousePoint) {
@@ -126,6 +159,7 @@ public class GameLogic {
     	        toggleTurns();
     	        Player newTurningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
     	        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(newTurningPlayer),newTurningPlayer);
+    	        printPieces(removedPieces);
     	    }
     	}
     	possibleMoveBoardCells.clear(); 
@@ -146,6 +180,8 @@ public class GameLogic {
     
     private boolean tryMovePiece(BoardCell clickedBoardCell) {
         if(selectedBoardCell!=null && possibleMoveBoardCells.contains(clickedBoardCell)){
+            lastMovePiece = selectedBoardCell.getPiece();
+            lastMoveBoardCell = selectedBoardCell;
             selectedBoardCell.getPiece().movePiece(clickedBoardCell);
             return true;
         }
@@ -157,6 +193,19 @@ public class GameLogic {
     }
     void mouseMoved(Point2D mousePoint) {
     	
+    }
+
+    void keyPressed(KeyEvent e) {
+        System.out.println("|"+e.getText() + "|");
+        if(e.getText().equals("r")) {
+            if(lastMoveBoardCell != null) {
+                System.err.println("reversing move");
+                reverseLastMove();
+            }else {
+                System.err.println("cannot reverse move");
+            }
+            
+        }
     }
     
     

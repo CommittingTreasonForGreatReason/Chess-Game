@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class App extends Application {
         scene = load_scene();
         stage.setScene(scene);
         stage.show();
+        scene.setOnKeyPressed(this::keyPressed);
     }
     private static Scene load_scene() throws IOException {
         final var primary = loadFXML("primary");
@@ -40,6 +42,10 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+    
+    private void keyPressed(KeyEvent e) {
+        GameLogic.getGameLogicInstance().keyPressed(e);
     }
 
 }

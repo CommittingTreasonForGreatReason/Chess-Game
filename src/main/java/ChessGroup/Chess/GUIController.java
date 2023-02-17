@@ -2,6 +2,7 @@ package ChessGroup.Chess;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;

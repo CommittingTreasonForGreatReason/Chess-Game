@@ -8,19 +8,26 @@ import javafx.scene.paint.Color;
 public class Pawn extends Piece{
 	
 	private boolean movedOnce = false;
+	private boolean lastMovedOnceStatus = false;
 
 	public Pawn(Color baseColor, BoardCell boardCell) {
 		super(baseColor, boardCell);
 		this.name = "p";
+	}
+	
+	public void reverseMovedOnceStatus() {
+	    movedOnce = lastMovedOnceStatus;
 	}
 
 	@Override
 	public void update(double secondsSinceLastFrame) {
 		
 	}
+	
 	@Override
 	public void movePiece(BoardCell clickedBoardCell) {
 	    boardCell.movePieceTo(clickedBoardCell);
+	    lastMovedOnceStatus = movedOnce;
         movedOnce = true;
     }
 

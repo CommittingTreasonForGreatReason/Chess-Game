@@ -64,7 +64,6 @@ public abstract class Piece extends DrawableObject{
 	    }else {
 	        boardCell.movePieceTo(clickedBoardCell);
 	    }
-	    
 	}
 	
 	protected void addPossibleMoveBoardCell(ArrayList<BoardCell> possibleMoveBoardCells, BoardCell boardCell) {
@@ -82,5 +81,10 @@ public abstract class Piece extends DrawableObject{
             return newLimit;
         }
 	    return oldLimit;
+	}
+	
+	@Override
+	public String toString() {
+	    return isBlack?"black ":"white " + name + " Piece:\nstanding on " + boardCell.toString();
 	}
 }
