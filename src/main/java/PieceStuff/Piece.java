@@ -60,22 +60,34 @@ public abstract class Piece extends DrawableObject{
 	    boardCell.movePieceTo(clickedBoardCell);
 	}
 	
+	public void forcePiece(BoardCell clickedBoardCell) {
+	    boardCell.movePieceTo(clickedBoardCell);
+	}
+	
 	protected void addPossibleMoveBoardCell(ArrayList<BoardCell> possibleMoveBoardCells, BoardCell boardCell) {
 	    if(!possibleMoveBoardCells.contains(boardCell)) {
 	        possibleMoveBoardCells.add(boardCell);
 	    }
 	}
 	
-	public abstract void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells);
+	public abstract void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean simulate);
 	
 	protected abstract int[] calculateLimits(BoardCell[][] boardCells);
+	
+	protected void trySetPossibleMove(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, BoardCell moveBoardCell, boolean simulate){
+	    if(simulate) {
+	        simulateMove(boardCells, possibleMoveBoardCells, moveBoardCell);
+	    }else {
+	        addPossibleMoveBoardCell(possibleMoveBoardCells, moveBoardCell);
+	    }
+	}
 	
 	protected void simulateMove(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, BoardCell moveBoardCell) {
 	    GameLogic.lastMovePiece = (Piece) this;
         GameLogic.lastMoveBoardCell = this.getBoardCell();
         GameLogic.lastRemovedPiece = moveBoardCell.getPiece();
         movePiece(moveBoardCell);
-        if(!GameLogic.getGameLogicInstance().isCheck(player,true)) {
+        if(!GameLogic.getGameLogicInstance().isCheck(player,false)) {
             addPossibleMoveBoardCell(possibleMoveBoardCells, moveBoardCell);
         }
         GameLogic.reverseLastMove();

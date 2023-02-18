@@ -122,10 +122,9 @@ public class GameLogic {
     
     public static void reverseLastMove() {
         BoardCell lastMovePieceCurrentBoardCell = lastMovePiece.getBoardCell();
-        lastMovePiece.movePiece(lastMoveBoardCell);
+        lastMovePiece.forcePiece(lastMoveBoardCell);
         if(lastRemovedPiece != null) {
             addPiece(lastRemovedPiece);
-            System.out.println("removedPieces.size()="+removedPieces.size());
         }
         lastMovePieceCurrentBoardCell.setPiece(lastRemovedPiece);
         
@@ -144,7 +143,7 @@ public class GameLogic {
         GameOverlay.getOverlayInstance().updateTurningPlayerInfo(blackPlayer);
     }
     
-    public boolean isCheck(Player player,boolean ignoreKing) {
+    public boolean isCheck(Player player, boolean simulate) {
         allPossibleMoveBoardCells.clear(); 
         ArrayList<Piece> otherTeamPieces = new ArrayList<Piece>();
         if(player.isBlack()) {
@@ -153,10 +152,7 @@ public class GameLogic {
             otherTeamPieces = blackPieces;
         }
         for (Piece piece : otherTeamPieces) {
-            if(ignoreKing && piece instanceof King) {
-                continue;
-            }
-            piece.setPossibleMoveBoardCells(board.getBoardCells(), allPossibleMoveBoardCells);
+            piece.setPossibleMoveBoardCells(board.getBoardCells(), allPossibleMoveBoardCells,simulate);
         }
         for(BoardCell boardCell : allPossibleMoveBoardCells) {
             if(boardCell.hasPiece() && boardCell.getPiece() instanceof King && boardCell.getPiece().isSameColor(player)) {
@@ -178,7 +174,7 @@ public class GameLogic {
         }
         for (Piece piece : otherTeamPieces) {
             piecePossibleMoveBoardCells.clear();
-                piece.setPossibleMoveBoardCells(board.getBoardCells(), piecePossibleMoveBoardCells);
+                piece.setPossibleMoveBoardCells(board.getBoardCells(), piecePossibleMoveBoardCells, false);
                 for(BoardCell boardCell : piecePossibleMoveBoardCells) {
                     if(boardCell.hasPiece() && boardCell.getPiece() instanceof King && boardCell.getPiece().isSameColor(player)) {
                         responsiblePieces.add(piece);
@@ -197,32 +193,22 @@ public class GameLogic {
         System.out.println("_________________________________________");
     }
     
-    private void printResponsiblePieces(Player player) {
-        ArrayList<Piece> responsiblePieces = getResponsibleCheckPieces(player);
-        if(responsiblePieces.size() == 0) {
-            return;
-        }
-        System.out.println("responsible Pieces are:________________");
-    	printPieces(getResponsibleCheckPieces(player));
-    	System.out.println("_______________________________________");
-    }
-    
     private void tryClickBoardCell(Point2D mousePoint) {
     	BoardCell clickedBoardCell = board.getClickedBoardCell(mousePoint);
     	
     	if(clickedBoardCell!=null) {
     	    if(trySelectPiece(clickedBoardCell)) {
+    	        Player turningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
+    	        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(turningPlayer,false),turningPlayer);
     	        return;
     	    }
     	    if(tryMovePiece(clickedBoardCell)){
     	        toggleTurns();
-    	        Player newTurningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
-    	        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(newTurningPlayer,true),newTurningPlayer);
     	        printPieces(removedPieces);
-    	        System.out.println(blackPieces.size()+whitePieces.size());
-    	        isCheck(whitePlayer.hasTurn()?blackPlayer:whitePlayer,true);
     	    }
     	}
+    	Player turningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
+        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(turningPlayer,false),turningPlayer);
     	possibleMoveBoardCells.clear(); 
     	selectedBoardCell = null;
     }
@@ -233,7 +219,7 @@ public class GameLogic {
             Piece selectedPiece = clickedBoardCell.getPiece();
             selectBoardCell(clickedBoardCell);
             possibleMoveBoardCells.clear(); 
-            selectedPiece.setPossibleMoveBoardCells(board.getBoardCells(), possibleMoveBoardCells);
+            selectedPiece.setPossibleMoveBoardCells(board.getBoardCells(), possibleMoveBoardCells,true);
             return true;
         }
         return false;

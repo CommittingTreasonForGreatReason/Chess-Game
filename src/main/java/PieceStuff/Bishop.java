@@ -18,7 +18,7 @@ public class Bishop extends Piece{
 	}
 
 	@Override
-	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean simulate) {
 	    int[] limits = calculateLimits(boardCells);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
@@ -29,21 +29,21 @@ public class Bishop extends Piece{
                             if(boardCell.isAbove(boardCells[i][j])) {
                                 if(boardCell.isRight(boardCells[i][j])) {
                                     if(i >= row-limits[0] && j <= column+limits[1]) {
-                                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);   
+                                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                                     }  
                                 }else {
                                     if(i >= row-limits[2] && j >= column-limits[3]) {
-                                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);   
+                                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);  
                                     }
                                 }
                             }else {
                                 if(boardCell.isRight(boardCells[i][j])) {
                                     if(i <= row+limits[4] && j <= column+limits[5]) {
-                                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+                                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                                     } 
                                 }else {
                                     if(i <= row+limits[6] && j >= column-limits[7]) {
-                                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+                                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                                     } 
                                 }
                             }

@@ -18,16 +18,16 @@ public class Rook extends Piece{
 	}
 
 	@Override
-	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean simulate) {
 	    int[] limits = calculateLimits(boardCells);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
             for (int j = 0;j<8;j++) {
                 if(!boardCells[i][j].hasPiece()|| boardCells[i][j].hasPiece() && !this.isSameColor(boardCells[i][j].getPiece())) {
                     if((i <= row+limits[1] && i >= row-limits[0] && j == column)) {
-                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                     }else if((j <= column+limits[2] && j >= column-limits[3] && i == row)) {
-                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                     }
                 }
             }

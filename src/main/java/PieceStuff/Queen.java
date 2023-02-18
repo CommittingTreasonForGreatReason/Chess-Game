@@ -18,7 +18,7 @@ public class Queen extends Piece{
 	}
 
 	@Override
-	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean simulate) {
 	    int[] limitsDiagonal = calculateLimits(boardCells);
 	    int[] limitsLinear = calculateLimits(boardCells);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
@@ -31,21 +31,21 @@ public class Queen extends Piece{
                             if(boardCell.isAbove(boardCells[i][j])) {
                                 if(boardCell.isRight(boardCells[i][j])) {
                                     if(i >= row-limitsDiagonal[0] && j <= column+limitsDiagonal[1]) {
-                                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]); 
+                                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                                     }  
                                 }else {
                                     if(i >= row-limitsDiagonal[2] && j >= column-limitsDiagonal[3]) {
-                                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]); 
+                                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                                     }
                                 }
                             }else {
                                 if(boardCell.isRight(boardCells[i][j])) {
                                     if(i <= row+limitsDiagonal[4] && j <= column+limitsDiagonal[5]) {
-                                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);  
+                                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                                     } 
                                 }else {
                                     if(i <= row+limitsDiagonal[6] && j >= column-limitsDiagonal[7]) {
-                                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);  
+                                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                                     } 
                                 }
                             }
@@ -53,9 +53,9 @@ public class Queen extends Piece{
                     }
                     // add linear possible moves
                     if((i <= row+limitsLinear[9] && i >= row-limitsLinear[8] && j == column)) {
-                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                     }else if((j <= column+limitsLinear[10] && j >= column-limitsLinear[11] && i == row)) {
-                        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+                        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                     }
                 }
             }

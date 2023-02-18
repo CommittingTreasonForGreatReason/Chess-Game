@@ -32,7 +32,7 @@ public class Pawn extends Piece{
     }
 
 	@Override
-	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells) {
+	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean simulate) {
 	    int[] limits = calculateLimits(boardCells);
 	    int row = this.boardCell.getRow(),column = this.boardCell.getColumn();
 		for (int i = 0;i<8;i++) {
@@ -40,23 +40,23 @@ public class Pawn extends Piece{
     			if(isBlack()) {
     				if((i <= row+(movedOnce?1:2) && i > row) && j == column) {
 	    				if(!boardCells[i][j].hasPiece() && i < row+limits[1]) {
-	    				    addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+	    				    trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
 	    				}
 	    			}
     				if(boardCells[i][j].hasPiece() && !this.isSameColor(boardCells[i][j].getPiece())) {
     				    if((j == column + 1 || j == column - 1) && i == row+1) {
-    				        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+    				        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
     				    }
     				}
     			}else {
 					if((i >= row-(movedOnce?1:2) && i < row) && j == column) {
 	    				if(!boardCells[i][j].hasPiece() && i > row-limits[0]) {
-	    				    addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+	    				    trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
 	    				}
 	    			}
 					if(boardCells[i][j].hasPiece() && !this.isSameColor(boardCells[i][j].getPiece())) {
 					    if((j == column + 1 || j == column - 1) && i == row-1) {
-					        addPossibleMoveBoardCell(possibleMoveBoardCells, boardCells[i][j]);
+					        trySetPossibleMove(boardCells, possibleMoveBoardCells, boardCells[i][j], simulate);
                         }
                     }
 				}
