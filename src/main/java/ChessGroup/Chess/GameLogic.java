@@ -145,12 +145,7 @@ public class GameLogic {
     
     public boolean isCheck(Player player, boolean simulate) {
         allPossibleMoveBoardCells.clear(); 
-        ArrayList<Piece> otherTeamPieces = new ArrayList<Piece>();
-        if(player.isBlack()) {
-            otherTeamPieces = whitePieces;
-        }else {
-            otherTeamPieces = blackPieces;
-        }
+        ArrayList<Piece> otherTeamPieces = player.isBlack()?whitePieces:blackPieces;
         for (Piece piece : otherTeamPieces) {
             piece.setPossibleMoveBoardCells(board.getBoardCells(), allPossibleMoveBoardCells,simulate);
         }
@@ -162,27 +157,15 @@ public class GameLogic {
         return false;
     }
     
-    public ArrayList<Piece> getResponsibleCheckPieces(Player player) {
-        ArrayList<Piece> responsiblePieces = new ArrayList<Piece>();
-        ArrayList<BoardCell> piecePossibleMoveBoardCells = new ArrayList<BoardCell>();
-        
-        ArrayList<Piece> otherTeamPieces = new ArrayList<Piece>();
-        if(player.isBlack()) {
-            otherTeamPieces = whitePieces;
-        }else {
-            otherTeamPieces = blackPieces;
+    public boolean isCheckMate(Player player) {
+        ArrayList<BoardCell> allPossibleMoveBoardCellsCheckMate = new ArrayList<BoardCell>();
+        ArrayList<Piece> thisTeamPieces = player.isBlack()?blackPieces:whitePieces;
+        for (Piece piece : thisTeamPieces) {
+            
+            piece.setPossibleMoveBoardCells(board.getBoardCells(), allPossibleMoveBoardCellsCheckMate,true);
         }
-        for (Piece piece : otherTeamPieces) {
-            piecePossibleMoveBoardCells.clear();
-                piece.setPossibleMoveBoardCells(board.getBoardCells(), piecePossibleMoveBoardCells, false);
-                for(BoardCell boardCell : piecePossibleMoveBoardCells) {
-                    if(boardCell.hasPiece() && boardCell.getPiece() instanceof King && boardCell.getPiece().isSameColor(player)) {
-                        responsiblePieces.add(piece);
-                    }
-                }
-        }
-        
-        return responsiblePieces;
+        System.out.println("possible Moves to Make:" + allPossibleMoveBoardCellsCheckMate.size());
+        return allPossibleMoveBoardCellsCheckMate.size()==0;
     }
     
     private void printPieces(ArrayList<Piece> pieces) {
@@ -198,19 +181,29 @@ public class GameLogic {
     	
     	if(clickedBoardCell!=null) {
     	    if(trySelectPiece(clickedBoardCell)) {
-    	        Player turningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
-    	        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(turningPlayer,false),turningPlayer);
     	        return;
     	    }
     	    if(tryMovePiece(clickedBoardCell)){
     	        toggleTurns();
     	        printPieces(removedPieces);
+    	        Player turningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
+    	        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(turningPlayer,false),turningPlayer);
     	    }
     	}
-    	Player turningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
-        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(turningPlayer,false),turningPlayer);
+
     	possibleMoveBoardCells.clear(); 
     	selectedBoardCell = null;
+    	printCheckState(blackPlayer);
+    	printCheckState(whitePlayer);
+    }
+    
+    private void printCheckState(Player player) {
+        System.out.println("_________________________________________");
+        System.out.println("Check States");
+        System.out.println((player.isBlack()?"black":"white") + " has turn:");
+        System.out.println("isCheck: "+isCheck(player,false));
+        System.out.println("isCheckMate: "+isCheckMate(player));
+        System.out.println("_________________________________________");
     }
     
     private boolean trySelectPiece(BoardCell clickedBoardCell) {

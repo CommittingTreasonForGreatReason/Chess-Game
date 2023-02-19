@@ -1,5 +1,6 @@
 package ChessGroup.Chess;
 
+import BoardStuff.Board;
 import BoardStuff.DrawableObject;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,9 +9,7 @@ import javafx.scene.text.Font;
 
 public final class GameOverlay extends DrawableObject {
     
-    public GameOverlay(Color baseColor, Point2D centerPoint) {
-        super(baseColor, centerPoint);
-    }
+    
 
     // Debugging settings
     private static final boolean framerateCapEnabled = false;
@@ -30,11 +29,16 @@ public final class GameOverlay extends DrawableObject {
     // Graphical elements
     private String playerTurnIndicator = "Black";
     private String playerCheckIndicator = "Black is NOT in check";
+    private double turnOverlayWidth,turnOverlayHeight;
 
     private boolean perfOverlayEnabled = false;
 
     private double overlayUpdateCnt = 0;
-
+    
+    public GameOverlay(Color baseColor, Point2D centerPoint) {
+        super(baseColor, centerPoint);
+        repositionGeometryOnResize();
+    }
     // singleton instance getter
     public static GameOverlay getOverlayInstance() {
         if (overlayInstance == null) {
@@ -85,6 +89,8 @@ public final class GameOverlay extends DrawableObject {
             gc.fillText(fpsCntStr.toString(), 20, 20);
         }
         // turn overlay
+        gc.setFill(Constants.gameOverlayBackGroundColor);
+        gc.fillRect(0, 0, turnOverlayWidth, turnOverlayHeight);
         gc.setFill(Color.BLACK);
         gc.setFont(playerTurnOverlayFont);
         gc.fillText(playerTurnIndicator, 20, 60);
@@ -104,6 +110,7 @@ public final class GameOverlay extends DrawableObject {
 
     @Override
     public void repositionGeometryOnResize() {
-        
+        turnOverlayWidth = Board.getBoardInstance().getSize()/2;
+        turnOverlayHeight = Board.getBoardInstance().getSize()/3;
     }
 }

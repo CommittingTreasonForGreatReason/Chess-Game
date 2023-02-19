@@ -8,7 +8,6 @@ import ChessGroup.Chess.GameLogic;
 import PieceStuff.Piece;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
 public class Board extends DrawableObject{
@@ -24,6 +23,10 @@ public class Board extends DrawableObject{
 		this.columns = columns;
 		this.size = size;
 	}
+	
+	public double getSize() {
+        return size;
+    }
 	
 	public BoardCell[][] getBoardCells() {
 		return boardCells;
