@@ -188,6 +188,7 @@ public class GameLogic {
     	        printPieces(removedPieces);
     	        Player turningPlayer = blackPlayer.hasTurn()?blackPlayer:whitePlayer;
     	        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(turningPlayer,false),turningPlayer);
+    	        GameOverlay.getOverlayInstance().updateIsCheckMate(isCheckMate(turningPlayer),turningPlayer);
     	    }
     	}
 

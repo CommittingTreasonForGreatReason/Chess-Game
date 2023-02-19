@@ -21,10 +21,14 @@ public class GUIController {
     	resizeableCanvas = new ResizeableCanvas(initial_width,initial_height);
     	System.out.println("initialized ResizeableCanvas:\nwidth=" + resizeableCanvas.getWidth() + "\nheight=" + resizeableCanvas.getHeight());
     	anchorPane.getChildren().add(resizeableCanvas);
-    	renderer = new Renderer(resizeableCanvas);
-    	System.out.println("initialized Renderer:");
     	gameLogic = new GameLogic();
     	System.out.println("initialized GameLogic:");
+    	gameLogic.initPlayers(true);
+        System.out.println("initalized Players:");
+        
+    	renderer = new Renderer(resizeableCanvas);
+    	System.out.println("initialized Renderer:");
+    	
     	final GameLoopTimer timer = new GameLoopTimer() {
             @Override
             public void tick(float secondsSinceLastFrame) {
@@ -39,8 +43,6 @@ public class GUIController {
         resizeableCanvas.heightProperty().addListener(e -> resizedCanvas());
         renderer.bind(anchorPane);
         System.out.println("bound renderer to anchorPane:");
-        gameLogic.initPlayers(true);
-        System.out.println("initalized Players:");
         gameLogic.initPieces();
         System.out.println("initalized GamePieces:");
         

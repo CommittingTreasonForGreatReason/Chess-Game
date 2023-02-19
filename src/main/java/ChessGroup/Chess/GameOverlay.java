@@ -1,5 +1,4 @@
 package ChessGroup.Chess;
-
 import BoardStuff.Board;
 import BoardStuff.DrawableObject;
 import javafx.geometry.Point2D;
@@ -9,8 +8,6 @@ import javafx.scene.text.Font;
 
 public final class GameOverlay extends DrawableObject {
     
-    
-
     // Debugging settings
     private static final boolean framerateCapEnabled = false;
 
@@ -27,17 +24,30 @@ public final class GameOverlay extends DrawableObject {
     private final StringBuilder fpsCntStr = new StringBuilder(fpsString);
 
     // Graphical elements
-    private String playerTurnIndicator = "Black";
-    private String playerCheckIndicator = "Black is NOT in check";
+    private String playerTurnIndicator = "uninitalized";
+    private String playerCheckIndicator = "uninitalized";
+    private Color playerCheckColor = null;
+    private String playerCheckMateIndicator = "uninitalized";
+    private Color playerCheckMateColor = null;
     private double turnOverlayWidth,turnOverlayHeight;
 
     private boolean perfOverlayEnabled = false;
 
     private double overlayUpdateCnt = 0;
+
+    
+
+    
     
     public GameOverlay(Color baseColor, Point2D centerPoint) {
         super(baseColor, centerPoint);
         repositionGeometryOnResize();
+    }
+    
+    public void init() {
+        updateTurningPlayerInfo(GameLogic.blackPlayer);
+        updateIsCheck(false, GameLogic.blackPlayer);
+        updateIsCheckMate(false, GameLogic.blackPlayer);
     }
     // singleton instance getter
     public static GameOverlay getOverlayInstance() {
@@ -54,11 +64,17 @@ public final class GameOverlay extends DrawableObject {
 
     // Setters for overlay texts
     public void updateTurningPlayerInfo(Player blackPlayer) {
-        playerTurnIndicator = blackPlayer.hasTurn()?"Black":"White";
+        playerTurnIndicator = "Turn: " + (blackPlayer.hasTurn()?"Black":"White");
+        
     }
     
     public void updateIsCheck(boolean isCheck, Player player) {
-        playerCheckIndicator = (player.isBlack()?"Black":"White") + " is " + (isCheck?"":"NOT") + " in check";
+        playerCheckIndicator = "is " + (isCheck?"":"NOT") + " check";
+        playerCheckColor = isCheck?Constants.redColor:Constants.greenColor;
+    }
+    public void updateIsCheckMate(boolean isCheckMate, Player player) {
+        playerCheckMateIndicator = "is " + (isCheckMate?"":"NOT") + " check mate";
+        playerCheckMateColor = isCheckMate?Constants.redColor:Constants.greenColor;
     }
 
     @Override
@@ -89,15 +105,17 @@ public final class GameOverlay extends DrawableObject {
             gc.fillText(fpsCntStr.toString(), 20, 20);
         }
         // turn overlay
+        gc.setFont(playerTurnOverlayFont);
         gc.setFill(Constants.gameOverlayBackGroundColor);
         gc.fillRect(0, 0, turnOverlayWidth, turnOverlayHeight);
-        gc.setFill(Color.BLACK);
-        gc.setFont(playerTurnOverlayFont);
-        gc.fillText(playerTurnIndicator, 20, 60);
+        
+        gc.setFill(Color.WHITE);
+        gc.fillText(playerTurnIndicator, turnOverlayWidth/6, turnOverlayHeight/6);
         // is check overlay
-        gc.setFill(Color.BLACK);
-        gc.setFont(playerTurnOverlayFont);
-        gc.fillText(playerCheckIndicator, 20, 100);
+        gc.setFill(playerCheckColor);
+        gc.fillText(playerCheckIndicator, turnOverlayWidth/6, turnOverlayHeight/6*2);
+        gc.setFill(playerCheckMateColor);
+        gc.fillText(playerCheckMateIndicator, turnOverlayWidth/6, turnOverlayHeight/6*3);
 
         // avoid to run application at maximum speed (cap fps)
         if (framerateCapEnabled) {
