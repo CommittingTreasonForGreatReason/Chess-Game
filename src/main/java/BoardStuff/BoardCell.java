@@ -11,20 +11,26 @@ import javafx.scene.text.Font;
 
 public class BoardCell extends DrawableObject{
 	private int row,column;
-	private static double size;
+	private double size;
 	private Piece piece;
 	private static Color selectedColor = Constants.redColor;
 	private static Color possibleMoveColor = Constants.redTransparentColor;
 	private static Color allPossibleMoveColor = Constants.greenTransparentColor;
-	public static void setSize(double size_) {
-		size = size_;
-	}
+	private boolean isHover = false;
 	
-	public BoardCell(Color baseColor, Point2D centerPoint, int row, int column) {
+	public BoardCell(Color baseColor, Point2D centerPoint, int row, int column, double size) {
 		super(baseColor, centerPoint);
 		this.row = row;
 		this.column = column;
+		this.size = size;
 	}
+	
+	public void setSize(double size) {
+        this.size = size;
+    }
+	public void setHover(boolean isHover) {
+        this.isHover = isHover;
+    }
 	
 	public int getRowDistance(BoardCell boardCell) {
         return Math.abs(boardCell.getRow()-this.getRow());
@@ -61,6 +67,7 @@ public class BoardCell extends DrawableObject{
 	    Piece thisPiece = this.getPiece();
 	    thisPiece.setBoardCell(boardCell);
 	    thisPiece.repositionGeometryOnResize();
+	    
 	    if(boardCell.hasPiece()) {
 	        GameLogic.removePiece(boardCell.getPiece());
 	    }
@@ -93,7 +100,13 @@ public class BoardCell extends DrawableObject{
 	public void draw(GraphicsContext gc) {
 		gc.setFill(baseColor);
 		gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
-		gc.setFill(Color.RED);
+		
+        if(isHover) {
+            gc.setFill(Constants.blueTransparentColor);
+            gc.fillRect(centerPoint.getX()-size/2, centerPoint.getY()-size/2, size, size);
+        }
+        
+        gc.setFill(Color.RED);
         gc.setFont(new Font("Arial", 15));
         gc.fillText(row+"/"+column, centerPoint.getX()+size/2-gc.getFont().getSize()*2, centerPoint.getY()+size/2-gc.getFont().getSize());
 	}

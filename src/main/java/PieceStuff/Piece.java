@@ -14,6 +14,7 @@ import javafx.scene.text.Font;
 public abstract class Piece extends DrawableObject{
 	
 	protected String name;
+	protected byte sortingValue;
 	protected BoardCell boardCell;
 	private static Font font = new Font("Arial",60);
 	protected Player player;
@@ -31,6 +32,9 @@ public abstract class Piece extends DrawableObject{
 	public BoardCell getBoardCell() {
 		return boardCell;
 	}
+	public byte getSortingValue() {
+        return sortingValue;
+    }
 	
 	public boolean isBlack() {
 		return player.isBlack();
@@ -49,6 +53,12 @@ public abstract class Piece extends DrawableObject{
 		gc.setFill(baseColor);
 		gc.setFont(font);
 		gc.fillText(name, centerPoint.getX()-font.getSize()/3, centerPoint.getY()+font.getSize()/3);
+	}
+	
+	public void drawPromotion(GraphicsContext gc, Point2D centerPoint, double size) {
+	    gc.setFill(baseColor);
+        gc.setFont(new Font("Arial",size));
+        gc.fillText(name, centerPoint.getX()-font.getSize()/3, centerPoint.getY()+font.getSize()/3);
 	}
 	
 	@Override

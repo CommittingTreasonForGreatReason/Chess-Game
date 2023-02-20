@@ -23,6 +23,8 @@ public class GUIController {
     	anchorPane.getChildren().add(resizeableCanvas);
     	gameLogic = new GameLogic();
     	System.out.println("initialized GameLogic:");
+    	gameLogic.pawnPromotion.initPromotionBoard();
+        System.out.println("initalized PromotionBoard:");
     	gameLogic.initPlayers(true);
         System.out.println("initalized Players:");
         
@@ -43,6 +45,7 @@ public class GUIController {
         resizeableCanvas.heightProperty().addListener(e -> resizedCanvas());
         renderer.bind(anchorPane);
         System.out.println("bound renderer to anchorPane:");
+        
         gameLogic.initPieces();
         System.out.println("initalized GamePieces:");
         

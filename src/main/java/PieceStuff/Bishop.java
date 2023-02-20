@@ -10,6 +10,7 @@ public class Bishop extends Piece{
 	public Bishop(Player player, BoardCell boardCell) {
 		super(player, boardCell);
 		this.name = "b";
+		this.sortingValue = 3;
 	}
 
 	@Override

@@ -10,6 +10,7 @@ public class Rook extends Piece{
 	public Rook(Player player, BoardCell boardCell) {
 		super(player, boardCell);
 		this.name = "r";
+		this.sortingValue = 4;
 	}
 
 	@Override

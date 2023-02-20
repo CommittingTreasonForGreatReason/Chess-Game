@@ -13,10 +13,19 @@ public class Pawn extends Piece{
 	public Pawn(Player player, BoardCell boardCell) {
 		super(player, boardCell);
 		this.name = "p";
+		this.sortingValue = 5;
 	}
 	
 	public void reverseMovedOnceStatus() {
 	    movedOnce = lastMovedOnceStatus;
+	}
+	
+	public boolean isOnPromotionBoardCell() {
+	    if(isBlack()) {
+	        return boardCell.getRow() == 7;
+	    }else {
+	        return boardCell.getRow() == 0;
+	    }
 	}
 
 	@Override

@@ -56,7 +56,6 @@ public class Board extends DrawableObject{
     }
     
     public void initBoard() {
-    	BoardCell.setSize(size/8);
     	for (int i = 0;i<8;i++) {
     		for (int j = 0;j<8;j++) {
     			Color boardCellColor;
@@ -67,10 +66,18 @@ public class Board extends DrawableObject{
     			}
     			
     			Point2D boardCellCenterPoint = new Point2D(size/16+size/8*j+centerPoint.getX()-size/2,size/16+size/8*i+centerPoint.getY()-size/2);
-    			boardCells[i][j] = new BoardCell(boardCellColor,boardCellCenterPoint,i,j);
+    			boardCells[i][j] = new BoardCell(boardCellColor,boardCellCenterPoint,i,j,size/8);
     			
     		}
 		}
+    }
+    
+    public void updateHover(Point2D mousePoint) {
+        for (int i = 0;i<8;i++) {
+            for (int j = 0;j<8;j++) {
+                boardCells[i][j].setHover(boardCells[i][j].contains(mousePoint));
+            }
+        }
     }
     
 	@Override
@@ -113,11 +120,11 @@ public class Board extends DrawableObject{
 	public void repositionGeometryOnResize() {
 		centerPoint = new Point2D(GUIController.getCanvasWidth()/2,GUIController.getCanvasHeight()/2);
 		size = (int)(GUIController.smallestSize()*0.8);
-		BoardCell.setSize(size/8);
 		for (int i = 0;i<8;i++) {
     		for (int j = 0;j<8;j++) {
     			Point2D boardCellCenterPoint = new Point2D(size/16+size/8*j+centerPoint.getX()-size/2,size/16+size/8*i+centerPoint.getY()-size/2);
     			boardCells[i][j].setCenterPoint(boardCellCenterPoint);
+    			boardCells[i][j].setSize(size/8);
     			boardCells[i][j].repositionGeometryOnResize();
     		}
 		}

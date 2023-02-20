@@ -10,6 +10,7 @@ public class Queen extends Piece{
 	public Queen(Player player, BoardCell boardCell) {
 		super(player, boardCell);
 		this.name = "Q";
+		this.sortingValue = 1;
 	}
 
 	@Override

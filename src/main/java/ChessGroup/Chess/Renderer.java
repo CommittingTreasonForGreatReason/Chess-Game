@@ -62,5 +62,6 @@ public final class Renderer {
     public void onResize() {
     	board.repositionGeometryOnResize();
     	gameOverlay.repositionGeometryOnResize();
+    	GameLogic.pawnPromotion.repositionGeometryOnResize();
     }
 }

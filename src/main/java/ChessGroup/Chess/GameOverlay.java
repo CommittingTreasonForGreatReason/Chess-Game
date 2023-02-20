@@ -1,6 +1,10 @@
 package ChessGroup.Chess;
+import java.util.ArrayList;
+
 import BoardStuff.Board;
 import BoardStuff.DrawableObject;
+import BoardStuff.PawnPromotion;
+import PieceStuff.Piece;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -23,22 +27,22 @@ public final class GameOverlay extends DrawableObject {
 
     private final StringBuilder fpsCntStr = new StringBuilder(fpsString);
 
-    // Graphical elements
+    // Graphical Elements
+    // Turn Overlay
     private String playerTurnIndicator = "uninitalized";
     private String playerCheckIndicator = "uninitalized";
     private Color playerCheckColor = null;
     private String playerCheckMateIndicator = "uninitalized";
     private Color playerCheckMateColor = null;
     private double turnOverlayWidth,turnOverlayHeight;
+    // Pawn Promotion Overlay
+    private boolean pawnPromotionOverlayEnabled; 
+    
 
     private boolean perfOverlayEnabled = false;
 
     private double overlayUpdateCnt = 0;
 
-    
-
-    
-    
     public GameOverlay(Color baseColor, Point2D centerPoint) {
         super(baseColor, centerPoint);
         repositionGeometryOnResize();
@@ -48,6 +52,14 @@ public final class GameOverlay extends DrawableObject {
         updateTurningPlayerInfo(GameLogic.blackPlayer);
         updateIsCheck(false, GameLogic.blackPlayer);
         updateIsCheckMate(false, GameLogic.blackPlayer);
+    }
+    
+    public static Point2D getScreenCenterPoint() {
+        return new Point2D(GUIController.getCanvasWidth()/2,GUIController.getCanvasHeight()/2);
+    }
+    
+    public void togglePawnPromotionOverlay() {
+        pawnPromotionOverlayEnabled = !pawnPromotionOverlayEnabled;
     }
     // singleton instance getter
     public static GameOverlay getOverlayInstance() {
@@ -64,8 +76,7 @@ public final class GameOverlay extends DrawableObject {
 
     // Setters for overlay texts
     public void updateTurningPlayerInfo(Player blackPlayer) {
-        playerTurnIndicator = "Turn: " + (blackPlayer.hasTurn()?"Black":"White");
-        
+        playerTurnIndicator = "Turn: " + (blackPlayer.hasTurn()?"Black":"White"); 
     }
     
     public void updateIsCheck(boolean isCheck, Player player) {
@@ -116,6 +127,11 @@ public final class GameOverlay extends DrawableObject {
         gc.fillText(playerCheckIndicator, turnOverlayWidth/6, turnOverlayHeight/6*2);
         gc.setFill(playerCheckMateColor);
         gc.fillText(playerCheckMateIndicator, turnOverlayWidth/6, turnOverlayHeight/6*3);
+        // pawn promotion overlay
+        if(pawnPromotionOverlayEnabled) {
+            GameLogic.pawnPromotion.draw(gc);
+        }
+        
 
         // avoid to run application at maximum speed (cap fps)
         if (framerateCapEnabled) {

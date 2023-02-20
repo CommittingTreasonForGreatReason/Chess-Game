@@ -10,6 +10,7 @@ public class Knight extends Piece{
 	public Knight(Player player, BoardCell boardCell) {
 		super(player, boardCell);
 		this.name = "k";
+		this.sortingValue = 2;
 	}
 
 	@Override
