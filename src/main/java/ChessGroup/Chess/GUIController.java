@@ -1,5 +1,6 @@
 package ChessGroup.Chess;
 
+import BoardStuff.PawnPromotion;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -23,7 +24,7 @@ public class GUIController {
     	anchorPane.getChildren().add(resizeableCanvas);
     	gameLogic = new GameLogic();
     	System.out.println("initialized GameLogic:");
-    	gameLogic.pawnPromotion.initPromotionBoard();
+    	PawnPromotion.initPromotionBoard();
         System.out.println("initalized PromotionBoard:");
     	gameLogic.initPlayers(true);
         System.out.println("initalized Players:");

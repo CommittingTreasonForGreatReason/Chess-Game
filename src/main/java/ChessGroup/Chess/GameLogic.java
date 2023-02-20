@@ -124,24 +124,6 @@ public class GameLogic {
         addPiece(new King(blackPlayer, board.getBoardCell(0, 4)));
         addPiece(new Queen(whitePlayer, board.getBoardCell(7, 3)));
         addPiece(new King(whitePlayer, board.getBoardCell(7, 4)));
-        
-        PawnPromotion.addPromotionPieces(new Pawn(blackPlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Pawn(whitePlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Pawn(blackPlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Pawn(blackPlayer, board.getBoardCell(0, 0)));
-        
-        PawnPromotion.addPromotionPieces(new Queen(blackPlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Queen(whitePlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Queen(blackPlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Queen(blackPlayer, board.getBoardCell(0, 0)));
-        
-        PawnPromotion.addPromotionPieces(new Knight(blackPlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Knight(whitePlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Bishop(blackPlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Bishop(blackPlayer, board.getBoardCell(0, 0)));
-        
-        PawnPromotion.addPromotionPieces(new Rook(blackPlayer, board.getBoardCell(0, 0)));
-        PawnPromotion.addPromotionPieces(new Rook(blackPlayer, board.getBoardCell(0, 0)));
     }
     
     private static void selectBoardCell(BoardCell boardCell) {

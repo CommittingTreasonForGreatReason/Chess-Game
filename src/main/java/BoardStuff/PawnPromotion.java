@@ -50,7 +50,6 @@ public class PawnPromotion extends DrawableObject{
                 }else {
                     promotionBoardCells[i][j].setPiece(null); 
                 }
-                
                 k++;
             }
         }
@@ -58,6 +57,7 @@ public class PawnPromotion extends DrawableObject{
     
     public static void setPromotingPlayer(Player promotingPlayer) {
         PawnPromotion.promotingPlayer = promotingPlayer;
+        sortPromotionPieces(getCurrentPromotionPieces());
     }
     public static void setPromotionBoardCell(BoardCell promotionBoardCell) {
         PawnPromotion.promotionBoardCell = promotionBoardCell;
@@ -86,10 +86,8 @@ public class PawnPromotion extends DrawableObject{
     public static void addPromotionPieces(Piece piece) {
         if(piece.isBlack()) {
             promotionBlackPieces.add(piece);
-            sortPromotionPieces(promotionBlackPieces);
         }else {
             promotionWhitePieces.add(piece);
-            sortPromotionPieces(promotionWhitePieces);
         }
     }
     
@@ -107,19 +105,19 @@ public class PawnPromotion extends DrawableObject{
         pieces.set(index2, temp);
     }
     
-    public static void sortPromotionPieces(ArrayList<Piece> pieces) {
-        if(pieces.size() == 0) {
+    public static void sortPromotionPieces(ArrayList<Piece> promotionPieces) {
+        if(promotionPieces.size() == 0) {
             return;
         }
-        for(int k = 0; k<pieces.size();k++) {
-            for(int i = 0; i<pieces.size()-1;i++) {
-                if(pieces.get(i).getSortingValue() > pieces.get(i+1).getSortingValue()) {
-                    swapPieces(i, i+1, pieces); 
+        for(int k = 0; k<promotionPieces.size();k++) {
+            for(int i = 0; i<promotionPieces.size()-1;i++) {
+                if(promotionPieces.get(i).getSortingValue() > promotionPieces.get(i+1).getSortingValue()) {
+                    swapPieces(i, i+1, promotionPieces); 
                 }
             }
         }
-        BoardCell[][] promotionBoardCells = pieces.get(0).isBlack()?promotionBlackBoardCells:promotionWhiteBoardCells;
-        setPiecesOnPromotionBoard(pieces,promotionBoardCells);
+        BoardCell[][] promotionBoardCells = promotionPieces.get(0).isBlack()?promotionBlackBoardCells:promotionWhiteBoardCells;
+        setPiecesOnPromotionBoard(promotionPieces,promotionBoardCells);
     }
     
     public void updateHover(Point2D mousePoint) {
@@ -144,10 +142,7 @@ public class PawnPromotion extends DrawableObject{
                         GameLogic.addPiece(selectedPiece);
                         selectedPiece.repositionGeometryOnResize();
                         
-                        
                         promotionBoardCell.setPiece(selectedPiece);
-                        System.out.println("selected Piece" + promotionBoardCells[i][j].getPiece());
-                        
                         promotionBoardCell = null;
                         promotingPlayer = null;
                         return true;
@@ -172,10 +167,11 @@ public class PawnPromotion extends DrawableObject{
             }
         }
         ArrayList<Piece> promotionPieces = getCurrentPromotionPieces();
+        
         for(Piece piece : promotionPieces) {
-//            if(!(piece instanceof Pawn)) {
+            if(!(piece instanceof Pawn)) {
                 piece.draw(gc);
-//            }
+            }
         }
     }
 

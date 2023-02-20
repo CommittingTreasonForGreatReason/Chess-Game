@@ -27,6 +27,7 @@ public abstract class Piece extends DrawableObject{
 	
 	public void setBoardCell(BoardCell boardCell) {
         this.boardCell = boardCell;
+        repositionGeometryOnResize();
     }
 	
 	public BoardCell getBoardCell() {

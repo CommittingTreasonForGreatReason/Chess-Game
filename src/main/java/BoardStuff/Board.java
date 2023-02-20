@@ -102,10 +102,10 @@ public class Board extends DrawableObject{
 		for(BoardCell possibleMoveBoardCell : possibleMoveBoardCells) {
 			possibleMoveBoardCell.drawPossibleMove(gc);
 		}
-		ArrayList<BoardCell> allPossibleMoveBoardCells = GameLogic.getAllPossibleMoveBoardCells();
-        for(BoardCell allPossibleMoveBoardCell : allPossibleMoveBoardCells) {
-            allPossibleMoveBoardCell.drawAllPossibleMove(gc);
-        }
+//		ArrayList<BoardCell> allPossibleMoveBoardCells = GameLogic.getAllPossibleMoveBoardCells();
+//        for(BoardCell allPossibleMoveBoardCell : allPossibleMoveBoardCells) {
+//            allPossibleMoveBoardCell.drawAllPossibleMove(gc);
+//        }
         ArrayList<Piece> blackPieces = GameLogic.getBlackPieces();
         for(Piece piece : blackPieces) {
             piece.draw(gc);
