@@ -5,19 +5,12 @@ import java.util.ArrayList;
 import BoardStuff.BoardCell;
 import ChessGroup.Chess.Player;
 
-public class Pawn extends Piece{
-	
-	private boolean movedOnce = false;
-	private boolean lastMovedOnceStatus = false;
+public class Pawn extends MoveOnceAbilityPiece{
 
 	public Pawn(Player player, BoardCell boardCell) {
 		super(player, boardCell);
 		this.name = "p";
 		this.sortingValue = 5;
-	}
-	
-	public void reverseMovedOnceStatus() {
-	    movedOnce = lastMovedOnceStatus;
 	}
 	
 	public boolean isOnPromotionBoardCell() {
@@ -32,13 +25,6 @@ public class Pawn extends Piece{
 	public void update(double secondsSinceLastFrame) {
 		
 	}
-	
-	@Override
-	public void movePiece(BoardCell clickedBoardCell) {
-	    boardCell.movePieceTo(clickedBoardCell);
-	    lastMovedOnceStatus = movedOnce;
-        movedOnce = true;
-    }
 
 	@Override
 	public void setPossibleMoveBoardCells(BoardCell[][] boardCells,ArrayList<BoardCell> possibleMoveBoardCells, boolean simulate) {

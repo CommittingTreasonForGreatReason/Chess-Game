@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import BoardStuff.Board;
 import BoardStuff.BoardCell;
 import BoardStuff.PawnPromotion;
-import PieceStuff.Bishop;
 import PieceStuff.King;
-import PieceStuff.Knight;
+import PieceStuff.MoveOnceAbilityPiece;
 import PieceStuff.Pawn;
 import PieceStuff.Piece;
 import PieceStuff.Queen;
@@ -97,13 +96,13 @@ public class GameLogic {
     }
     
     public void initPieces() {
-//    	for(int i = 0;i<8;i++) {
-//    		addPiece(new Pawn(blackPlayer, board.getBoardCell(1, i)));
-//    		addPiece(new Pawn(whitePlayer, board.getBoardCell(6, i)));
-//    	}
-        addPiece(new Pawn(blackPlayer, board.getBoardCell(6, 6)));
-        addPiece(new Pawn(whitePlayer, board.getBoardCell(1, 6)));
-        
+    	for(int i = 0;i<8;i++) {
+    		addPiece(new Pawn(blackPlayer, board.getBoardCell(1, i)));
+    		addPiece(new Pawn(whitePlayer, board.getBoardCell(6, i)));
+    	}
+//        addPiece(new Pawn(blackPlayer, board.getBoardCell(6, 6)));
+//        addPiece(new Pawn(whitePlayer, board.getBoardCell(1, 6)));
+//        
         
     	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 0)));
     	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 7)));
@@ -139,8 +138,8 @@ public class GameLogic {
         }
         lastMovePieceCurrentBoardCell.setPiece(lastRemovedPiece);
         
-        if(lastMovePiece instanceof Pawn) {
-            ((Pawn)lastMovePiece).reverseMovedOnceStatus();
+        if(lastMovePiece instanceof MoveOnceAbilityPiece) {
+            ((MoveOnceAbilityPiece)lastMovePiece).reverseMovedOnceStatus();
         }
         
         lastMoveBoardCell = null;
@@ -199,13 +198,10 @@ public class GameLogic {
     	    }
     	    if(tryMovePiece(clickedBoardCell)){
     	        if(PawnPromotion.isPawnPromotion()) {
-    	            System.out.println("Pawn must be promoted!");
     	            GameOverlay.getOverlayInstance().togglePawnPromotionOverlay();
     	        }else {
     	            toggleTurns();
-    	            Player turningPlayer = getTurningPlayer();
-    	            GameOverlay.getOverlayInstance().updateIsCheck(isCheck(turningPlayer,false),turningPlayer);
-    	            GameOverlay.getOverlayInstance().updateIsCheckMate(isCheckMate(turningPlayer),turningPlayer);
+    	            updateOverlay();
     	        }
     	        
     	    }
@@ -221,6 +217,12 @@ public class GameLogic {
         System.out.println("isCheck: "+isCheck(player,false));
         System.out.println("isCheckMate: "+isCheckMate(player));
         System.out.println("_________________________________________");
+    }
+    
+    private void updateOverlay() {
+        Player turningPlayer = getTurningPlayer();
+        GameOverlay.getOverlayInstance().updateIsCheck(isCheck(turningPlayer,false),turningPlayer);
+        GameOverlay.getOverlayInstance().updateIsCheckMate(isCheckMate(turningPlayer),turningPlayer);
     }
     
     private boolean trySelectPiece(BoardCell clickedBoardCell) {
@@ -241,9 +243,18 @@ public class GameLogic {
             GameLogic.lastMoveBoardCell = selectedBoardCell;
             GameLogic.lastRemovedPiece = clickedBoardCell.getPiece();
             Piece selectedPiece = selectedBoardCell.getPiece();
+            if(selectedPiece instanceof King) {
+                if(tryCastle((King)selectedPiece, clickedBoardCell)) {
+                    System.out.println("successful castle");
+                    return true;
+                }
+            }
+            
             selectedPiece.movePiece(clickedBoardCell);
+            
             if(selectedPiece instanceof Pawn) {
                 if(((Pawn)selectedPiece).isOnPromotionBoardCell() && PawnPromotion.hasPromotiblePieces(selectedPiece)) {
+                    System.out.println("promotion");
                     PawnPromotion.setPromotingPlayer(getTurningPlayer());
                     PawnPromotion.setPromotionBoardCell(clickedBoardCell);
                 }
@@ -253,6 +264,32 @@ public class GameLogic {
         return false;
     }
     
+    private boolean tryCastle(King king,BoardCell clickedBoardCell) {
+        if(king.hasMovedOnce() || !clickedBoardCell.isCastleKingBoardCell(king)) {
+            return false;
+        }
+        Rook rook = null;
+        BoardCell rookCastleBoardCell = null;
+        int row = king.isBlack()?0:7;
+        if(clickedBoardCell.getColumn() == 6) {
+            // short castle
+            rook = (Rook)board.getBoardCell(row, 7).getPiece();
+            rookCastleBoardCell = board.getBoardCell(row, 5);
+        }else if(clickedBoardCell.getColumn() == 2) {
+            // long castle
+            rook = (Rook)board.getBoardCell(row, 0).getPiece(); 
+            rookCastleBoardCell = board.getBoardCell(row, 3);
+        }else {
+            System.err.println("invalid castle!");
+        }
+        if(rookCastleBoardCell.hasPiece() || clickedBoardCell.hasPiece()) {
+            return false;
+        }
+        rook.movePiece(rookCastleBoardCell);
+        king.movePiece(clickedBoardCell);
+        return true;
+    }
+    
     void mouseClicked(Point2D mousePoint) {
         if(!PawnPromotion.isPawnPromotion()) {
             tryClickBoardCell(mousePoint);
@@ -260,6 +297,7 @@ public class GameLogic {
             if(pawnPromotion.trySelectPromotionPiece(mousePoint)) {
                 GameOverlay.getOverlayInstance().togglePawnPromotionOverlay();
                 toggleTurns();
+                updateOverlay();
             }
         }
     	

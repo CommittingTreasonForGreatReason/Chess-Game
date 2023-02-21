@@ -2,6 +2,7 @@ package BoardStuff;
 
 import ChessGroup.Chess.Constants;
 import ChessGroup.Chess.GameLogic;
+import PieceStuff.King;
 import PieceStuff.Piece;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -53,6 +54,11 @@ public class BoardCell extends DrawableObject{
     
     public boolean isLeft(BoardCell boardCell) {
         return boardCell.getColumn() < this.getColumn();
+    }
+    
+    public boolean isCastleKingBoardCell(King king) {
+        int r = king.isBlack()?0:7;
+        return row == r && (column == 2 || column == 6);
     }
 	
 	public void setPiece(Piece piece) {

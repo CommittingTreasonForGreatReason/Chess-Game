@@ -75,8 +75,9 @@ public class PawnPromotion extends DrawableObject{
     }
     
     public static boolean hasPromotiblePieces(Piece piece) {
-        for(int i = 0;i<(piece.isBlack()?promotionBlackPieces.size():promotionWhitePieces.size());i++) {
-            if(!(promotionBlackPieces.get(i) instanceof Pawn)) {
+        ArrayList<Piece> promotionPieces = piece.isBlack()?promotionBlackPieces:promotionWhitePieces;
+        for(int i = 0;i<(promotionPieces.size());i++) {
+            if(!(promotionPieces.get(i) instanceof Pawn)) {
                 return true;
             }
         }

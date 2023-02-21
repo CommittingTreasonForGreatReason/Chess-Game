@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import BoardStuff.BoardCell;
 import ChessGroup.Chess.Player;
 
-public class Rook extends Piece{
+public class Rook extends MoveOnceAbilityPiece{
 
 	public Rook(Player player, BoardCell boardCell) {
 		super(player, boardCell);
