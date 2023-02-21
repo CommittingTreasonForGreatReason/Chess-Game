@@ -11,16 +11,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Board extends DrawableObject{
-	private int rows,columns;
 	private double size;
 	private BoardCell[][] boardCells = new BoardCell[8][8];
 	// singleton instance
     private static Board board;
 	
-	private Board(final int rows, final int columns, final int size, final Point2D centerPoint, final Color baseColor) {
+	private Board(final int size, final Point2D centerPoint, final Color baseColor) {
 		super(baseColor, centerPoint);
-		this.rows = rows;
-		this.columns = columns;
 		this.size = size;
 	}
 	
@@ -49,7 +46,7 @@ public class Board extends DrawableObject{
 	// singleton getter
     public static Board getBoardInstance() {
         if (board == null) {
-            board = new Board(8,8,(int)(GUIController.smallestSize()*0.8),
+            board = new Board((int)(GUIController.smallestSize()*0.8),
             		new Point2D(GUIController.getCanvasWidth()/2,GUIController.getCanvasHeight()/2), Color.BLACK);
         }
         return board;

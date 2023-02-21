@@ -1,10 +1,7 @@
 package ChessGroup.Chess;
-import java.util.ArrayList;
 
 import BoardStuff.Board;
 import BoardStuff.DrawableObject;
-import BoardStuff.PawnPromotion;
-import PieceStuff.Piece;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -86,6 +83,9 @@ public final class GameOverlay extends DrawableObject {
     public void updateIsCheckMate(boolean isCheckMate, Player player) {
         playerCheckMateIndicator = "is " + (isCheckMate?"":"NOT") + " check mate";
         playerCheckMateColor = isCheckMate?Constants.redColor:Constants.greenColor;
+        if(isCheckMate) {
+            playerCheckMateIndicator+="\n\npress space to restart";
+        }
     }
 
     @Override

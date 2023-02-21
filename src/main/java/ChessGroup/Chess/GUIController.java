@@ -1,5 +1,6 @@
 package ChessGroup.Chess;
 
+import BoardStuff.Board;
 import BoardStuff.PawnPromotion;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -16,19 +17,19 @@ public class GUIController {
 	static ResizeableCanvas resizeableCanvas;
 	static Renderer renderer;
 	static GameLogic gameLogic;
+	static Board board;
 
     @FXML 
     private void initialize() {
     	resizeableCanvas = new ResizeableCanvas(initial_width,initial_height);
     	System.out.println("initialized ResizeableCanvas:\nwidth=" + resizeableCanvas.getWidth() + "\nheight=" + resizeableCanvas.getHeight());
     	anchorPane.getChildren().add(resizeableCanvas);
-    	gameLogic = new GameLogic();
-    	System.out.println("initialized GameLogic:");
+    	
     	PawnPromotion.initPromotionBoard();
         System.out.println("initalized PromotionBoard:");
-    	gameLogic.initPlayers(true);
-        System.out.println("initalized Players:");
-        
+        gameLogic = new GameLogic();
+    	gameLogic.initialize();
+    	System.out.println("initialized GameLogic:");
     	renderer = new Renderer(resizeableCanvas);
     	System.out.println("initialized Renderer:");
     	
@@ -41,14 +42,14 @@ public class GUIController {
             }
         };
         
+        
         // add listeners to capture and handle window resize events
         resizeableCanvas.widthProperty().addListener(e -> resizedCanvas());
         resizeableCanvas.heightProperty().addListener(e -> resizedCanvas());
         renderer.bind(anchorPane);
         System.out.println("bound renderer to anchorPane:");
         
-        gameLogic.initPieces();
-        System.out.println("initalized GamePieces:");
+        
         
         resizeableCanvas.setOnMouseClicked(this::mouseClicked);
         resizeableCanvas.setOnMouseMoved(this::mouseMoved);

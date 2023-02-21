@@ -71,6 +71,27 @@ public class GameLogic {
         return gameLogic;
     }
     
+    public void initialize() {
+        board = Board.getBoardInstance();
+        board.initBoard();
+        initPlayers(true);
+        initPieces();
+        GameOverlay.getOverlayInstance().init();
+    }
+    
+    public void restartGame() {
+        selectedBoardCell = null;
+        possibleMoveBoardCells.clear();
+        allPossibleMoveBoardCells.clear();
+        blackPieces.clear();
+        whitePieces.clear();
+        lastMovePiece = null;
+        lastRemovedPiece = null;
+        lastMoveBoardCell = null;
+        initialize();
+        PawnPromotion.restartGame();
+    }
+    
     public static void removePiece(Piece piece) {
         PawnPromotion.addPromotionPieces(piece);
         if(piece.isBlack()) {
@@ -97,17 +118,17 @@ public class GameLogic {
     
     public void initPieces() {
     	for(int i = 0;i<8;i++) {
-    		addPiece(new Pawn(blackPlayer, board.getBoardCell(1, i)));
-    		addPiece(new Pawn(whitePlayer, board.getBoardCell(6, i)));
+//    		addPiece(new Pawn(blackPlayer, board.getBoardCell(1, i)));
+//    		addPiece(new Pawn(whitePlayer, board.getBoardCell(6, i)));
     	}
 //        addPiece(new Pawn(blackPlayer, board.getBoardCell(6, 6)));
 //        addPiece(new Pawn(whitePlayer, board.getBoardCell(1, 6)));
 //        
         
-    	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 0)));
-    	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 7)));
-    	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 0)));
-    	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 7)));
+//    	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 0)));
+//    	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 7)));
+//    	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 0)));
+//    	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 7)));
     	
 //    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 1)));
 //    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 6)));
@@ -119,9 +140,17 @@ public class GameLogic {
 //        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 2)));
 //        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 5)));
         
-        addPiece(new Queen(blackPlayer, board.getBoardCell(0, 3)));
-        addPiece(new King(blackPlayer, board.getBoardCell(0, 4)));
-        addPiece(new Queen(whitePlayer, board.getBoardCell(7, 3)));
+//        addPiece(new Queen(blackPlayer, board.getBoardCell(0, 3)));
+//        addPiece(new King(blackPlayer, board.getBoardCell(0, 4)));
+//        addPiece(new Queen(whitePlayer, board.getBoardCell(7, 3)));
+//        addPiece(new King(whitePlayer, board.getBoardCell(7, 4)));
+    	
+    	addPiece(new Queen(blackPlayer, board.getBoardCell(0, 3)));
+    	addPiece(new King(blackPlayer, board.getBoardCell(0, 4)));
+    	addPiece(new Queen(blackPlayer, board.getBoardCell(7, 3)));
+    	addPiece(new Queen(blackPlayer, board.getBoardCell(6, 4)));
+    	addPiece(new Queen(blackPlayer, board.getBoardCell(7, 5)));
+    	
         addPiece(new King(whitePlayer, board.getBoardCell(7, 4)));
     }
     
@@ -319,7 +348,10 @@ public class GameLogic {
             }else {
                 System.err.println("cannot reverse move");
             }
-            
+        }else if(e.getText().equals(" ")) {
+            if(isCheckMate(getTurningPlayer())) {
+                restartGame();
+            }
         }
     }
     

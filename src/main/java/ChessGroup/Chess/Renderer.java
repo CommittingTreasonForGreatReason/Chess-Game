@@ -20,10 +20,8 @@ public final class Renderer {
     	this.resizeableCanvas = resizeableCanvas;
     	gc = resizeableCanvas.getGraphicsContext2D();
     	board = Board.getBoardInstance();
-    	board.initBoard();
     	gameOverlay = GameOverlay.getOverlayInstance();
     	gameOverlay.enableFpsOverlay(true);
-    	gameOverlay.init();
     }
 
     // binds the anchor pane width/height to the canvas width/height

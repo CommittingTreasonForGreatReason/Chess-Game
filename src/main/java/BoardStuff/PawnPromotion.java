@@ -18,8 +18,15 @@ public class PawnPromotion extends DrawableObject{
         size = Board.getBoardInstance().getSize()*1.1;
     }
     
+    public static void restartGame() {
+        initPromotionBoard();
+        promotionWhitePieces.clear();
+        promotionBlackPieces.clear();
+        promotingPlayer=null;
+        promotionBoardCell=null;
+    }
+    
     private static double size;
-
     private static ArrayList<Piece> promotionWhitePieces = new ArrayList<Piece>();
     private static ArrayList<Piece> promotionBlackPieces = new ArrayList<Piece>();
     private static Player promotingPlayer = null;
