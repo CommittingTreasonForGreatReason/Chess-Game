@@ -25,13 +25,10 @@ public class GUIController {
     	System.out.println("initialized ResizeableCanvas:\nwidth=" + resizeableCanvas.getWidth() + "\nheight=" + resizeableCanvas.getHeight());
     	anchorPane.getChildren().add(resizeableCanvas);
     	
-    	PawnPromotion.initPromotionBoard();
-        System.out.println("initalized PromotionBoard:");
         gameLogic = new GameLogic();
     	gameLogic.initialize();
-    	System.out.println("initialized GameLogic:");
+    	PawnPromotion.initPawnPromotion();
     	renderer = new Renderer(resizeableCanvas);
-    	System.out.println("initialized Renderer:");
     	
     	final GameLoopTimer timer = new GameLoopTimer() {
             @Override

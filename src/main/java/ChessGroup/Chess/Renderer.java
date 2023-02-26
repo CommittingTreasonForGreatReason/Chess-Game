@@ -22,6 +22,7 @@ public final class Renderer {
     	board = Board.getBoardInstance();
     	gameOverlay = GameOverlay.getOverlayInstance();
     	gameOverlay.enableFpsOverlay(true);
+    	System.out.println("initialized Renderer:");
     }
 
     // binds the anchor pane width/height to the canvas width/height

@@ -64,9 +64,9 @@ public class Board extends DrawableObject{
     			
     			Point2D boardCellCenterPoint = new Point2D(size/16+size/8*j+centerPoint.getX()-size/2,size/16+size/8*i+centerPoint.getY()-size/2);
     			boardCells[i][j] = new BoardCell(boardCellColor,boardCellCenterPoint,i,j,size/8);
-    			
     		}
 		}
+    	System.out.println("initialized Board:");
     }
     
     public void updateHover(Point2D mousePoint) {

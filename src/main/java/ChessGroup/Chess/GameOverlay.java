@@ -28,14 +28,12 @@ public final class GameOverlay extends DrawableObject {
     // Turn Overlay
     private String playerTurnIndicator = "uninitalized";
     private String playerCheckIndicator = "uninitalized";
-    private Color playerCheckColor = null;
     private String playerCheckMateIndicator = "uninitalized";
+    private Color playerCheckColor = null;
     private Color playerCheckMateColor = null;
     private double turnOverlayWidth,turnOverlayHeight;
     // Pawn Promotion Overlay
-    private boolean pawnPromotionOverlayEnabled; 
-    
-
+    private boolean pawnPromotionOverlayEnabled = false; 
     private boolean perfOverlayEnabled = false;
 
     private double overlayUpdateCnt = 0;
@@ -44,11 +42,19 @@ public final class GameOverlay extends DrawableObject {
         super(baseColor, centerPoint);
         repositionGeometryOnResize();
     }
+    // singleton instance getter
+    public static GameOverlay getOverlayInstance() {
+        if (overlayInstance == null) {
+            overlayInstance = new GameOverlay(null,null);
+        }
+        return overlayInstance;
+    }
     
     public void init() {
         updateTurningPlayerInfo(GameLogic.blackPlayer);
         updateIsCheck(false, GameLogic.blackPlayer);
         updateIsCheckMate(false, GameLogic.blackPlayer);
+        System.out.println("initialized GameOverlay:");
     }
     
     public static Point2D getScreenCenterPoint() {
@@ -58,13 +64,7 @@ public final class GameOverlay extends DrawableObject {
     public void togglePawnPromotionOverlay() {
         pawnPromotionOverlayEnabled = !pawnPromotionOverlayEnabled;
     }
-    // singleton instance getter
-    public static GameOverlay getOverlayInstance() {
-        if (overlayInstance == null) {
-            overlayInstance = new GameOverlay(null,null);
-        }
-        return overlayInstance;
-    }
+    
 
     // method to enable / disable performance overlay
     public void enableFpsOverlay(boolean enabled) {

@@ -16,9 +16,9 @@ public abstract class Piece extends DrawableObject{
 	protected String name;
 	protected byte sortingValue;
 	protected BoardCell boardCell;
-	private static Font font = new Font("Arial",60);
 	protected Player player;
-
+	private static Font font = new Font("Arial",60);
+	
 	public Piece(Player player, BoardCell boardCell) {
 		super(player.isBlack()?Constants.blackColorPiece:Constants.whiteColorPiece, new Point2D(boardCell.centerPoint.getX(),boardCell.centerPoint.getY()));
 		this.boardCell = boardCell;

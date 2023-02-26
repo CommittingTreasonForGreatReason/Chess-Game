@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import BoardStuff.Board;
 import BoardStuff.BoardCell;
 import BoardStuff.PawnPromotion;
+import PieceStuff.Bishop;
 import PieceStuff.King;
+import PieceStuff.Knight;
 import PieceStuff.MoveOnceAbilityPiece;
 import PieceStuff.Pawn;
 import PieceStuff.Piece;
@@ -72,11 +74,13 @@ public class GameLogic {
     }
     
     public void initialize() {
+        System.out.println("initializing GameLogic...");
         board = Board.getBoardInstance();
         board.initBoard();
         initPlayers(true);
         initPieces();
         GameOverlay.getOverlayInstance().init();
+        System.out.println("initialized GameLogic:");
     }
     
     public void restartGame() {
@@ -89,7 +93,7 @@ public class GameLogic {
         lastRemovedPiece = null;
         lastMoveBoardCell = null;
         initialize();
-        PawnPromotion.restartGame();
+        PawnPromotion.initPawnPromotion();
     }
     
     public static void removePiece(Piece piece) {
@@ -118,39 +122,28 @@ public class GameLogic {
     
     public void initPieces() {
     	for(int i = 0;i<8;i++) {
-//    		addPiece(new Pawn(blackPlayer, board.getBoardCell(1, i)));
-//    		addPiece(new Pawn(whitePlayer, board.getBoardCell(6, i)));
+    		addPiece(new Pawn(blackPlayer, board.getBoardCell(1, i)));
+    		addPiece(new Pawn(whitePlayer, board.getBoardCell(6, i)));
     	}
-//        addPiece(new Pawn(blackPlayer, board.getBoardCell(6, 6)));
-//        addPiece(new Pawn(whitePlayer, board.getBoardCell(1, 6)));
-//        
         
-//    	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 0)));
-//    	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 7)));
-//    	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 0)));
-//    	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 7)));
+    	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 0)));
+    	addPiece(new Rook(blackPlayer, board.getBoardCell(0, 7)));
+    	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 0)));
+    	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 7)));
     	
-//    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 1)));
-//    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 6)));
-//    	addPiece(new Knight(whitePlayer, board.getBoardCell(7, 1)));
-//    	addPiece(new Knight(whitePlayer, board.getBoardCell(7, 6)));
+    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 1)));
+    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 6)));
+    	addPiece(new Knight(whitePlayer, board.getBoardCell(7, 1)));
+    	addPiece(new Knight(whitePlayer, board.getBoardCell(7, 6)));
     	
-//    	addPiece(new Bishop(blackPlayer, board.getBoardCell(0, 2)));
-//        addPiece(new Bishop(blackPlayer, board.getBoardCell(0, 5)));
-//        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 2)));
-//        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 5)));
+    	addPiece(new Bishop(blackPlayer, board.getBoardCell(0, 2)));
+        addPiece(new Bishop(blackPlayer, board.getBoardCell(0, 5)));
+        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 2)));
+        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 5)));
         
-//        addPiece(new Queen(blackPlayer, board.getBoardCell(0, 3)));
-//        addPiece(new King(blackPlayer, board.getBoardCell(0, 4)));
-//        addPiece(new Queen(whitePlayer, board.getBoardCell(7, 3)));
-//        addPiece(new King(whitePlayer, board.getBoardCell(7, 4)));
-    	
-    	addPiece(new Queen(blackPlayer, board.getBoardCell(0, 3)));
-    	addPiece(new King(blackPlayer, board.getBoardCell(0, 4)));
-    	addPiece(new Queen(blackPlayer, board.getBoardCell(7, 3)));
-    	addPiece(new Queen(blackPlayer, board.getBoardCell(6, 4)));
-    	addPiece(new Queen(blackPlayer, board.getBoardCell(7, 5)));
-    	
+        addPiece(new Queen(blackPlayer, board.getBoardCell(0, 3)));
+        addPiece(new King(blackPlayer, board.getBoardCell(0, 4)));
+        addPiece(new Queen(whitePlayer, board.getBoardCell(7, 3)));
         addPiece(new King(whitePlayer, board.getBoardCell(7, 4)));
     }
     
