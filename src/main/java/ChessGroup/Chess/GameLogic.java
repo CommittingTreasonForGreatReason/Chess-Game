@@ -21,6 +21,11 @@ public class GameLogic {
 	private static ArrayList<Piece> whitePieces = new ArrayList<Piece>();
 	public static Piece lastMovePiece,lastRemovedPiece;
 	public static BoardCell lastMoveBoardCell;
+	
+	
+	private static ArrayList<Piece> lastMovePieces = new ArrayList<Piece>();
+	private static ArrayList<Piece> lastRemovedPieces = new ArrayList<Piece>();
+	private static ArrayList<BoardCell> lastMoveBoardCells = new ArrayList<BoardCell>();
 	public static PawnPromotion pawnPromotion;
 	
 	// singleton instance
@@ -131,24 +136,47 @@ public class GameLogic {
     	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 0)));
     	addPiece(new Rook(whitePlayer, board.getBoardCell(7, 7)));
     	
-    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 1)));
-    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 6)));
-    	addPiece(new Knight(whitePlayer, board.getBoardCell(7, 1)));
-    	addPiece(new Knight(whitePlayer, board.getBoardCell(7, 6)));
+//    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 1)));
+//    	addPiece(new Knight(blackPlayer, board.getBoardCell(0, 6)));
+//    	addPiece(new Knight(whitePlayer, board.getBoardCell(7, 1)));
+//    	addPiece(new Knight(whitePlayer, board.getBoardCell(7, 6)));
     	
-    	addPiece(new Bishop(blackPlayer, board.getBoardCell(0, 2)));
-        addPiece(new Bishop(blackPlayer, board.getBoardCell(0, 5)));
-        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 2)));
-        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 5)));
+//    	addPiece(new Bishop(blackPlayer, board.getBoardCell(0, 2)));
+//        addPiece(new Bishop(blackPlayer, board.getBoardCell(0, 5)));
+//        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 2)));
+//        addPiece(new Bishop(whitePlayer, board.getBoardCell(7, 5)));
         
         addPiece(new Queen(blackPlayer, board.getBoardCell(0, 3)));
         addPiece(new King(blackPlayer, board.getBoardCell(0, 4)));
-        addPiece(new Queen(whitePlayer, board.getBoardCell(7, 3)));
+//        addPiece(new Queen(whitePlayer, board.getBoardCell(7, 3)));
         addPiece(new King(whitePlayer, board.getBoardCell(7, 4)));
     }
     
     private static void selectBoardCell(BoardCell boardCell) {
     	selectedBoardCell = boardCell;
+    }
+    
+    public static void reverseLastMovePlayer() {
+    	int index = lastMovePieces.size()-1;
+    	Piece piece = lastMovePieces.get(index);
+    	Piece removedPiece = lastRemovedPieces.get(index);
+    	BoardCell boardCell = lastMoveBoardCells.get(index);
+    	BoardCell lastMovePieceCurrentBoardCell = piece.getBoardCell();
+    	
+    	piece.forcePiece(boardCell);
+    	if(removedPiece != null) {
+    		removedPiece.setBoardCell(lastMovePieceCurrentBoardCell);
+            addPiece(removedPiece);
+        }
+    	lastMovePieceCurrentBoardCell.setPiece(removedPiece);
+    	
+    	if(piece instanceof MoveOnceAbilityPiece) {
+            ((MoveOnceAbilityPiece)piece).reverseMovedOnceStatus();
+        }
+    	
+    	lastMovePieces.remove(index);
+    	lastMoveBoardCells.remove(index);
+    	lastRemovedPieces.remove(index);
     }
     
     public static void reverseLastMove() {
@@ -259,11 +287,21 @@ public class GameLogic {
         return false;
     }
     
+    private void updateLastMoveData(BoardCell boardCell, BoardCell clickedBoardCell) {
+    	GameLogic.lastMovePiece = boardCell.getPiece();
+        GameLogic.lastMoveBoardCell = boardCell;
+        GameLogic.lastRemovedPiece = clickedBoardCell.getPiece();
+        
+        GameLogic.lastMovePieces.add(boardCell.getPiece());
+        GameLogic.lastMoveBoardCells.add(boardCell);
+        GameLogic.lastRemovedPieces.add(clickedBoardCell.getPiece());
+    }
+    
     public boolean tryMovePiece(BoardCell clickedBoardCell) {
         if(selectedBoardCell!=null && possibleMoveBoardCells.contains(clickedBoardCell)){
-            GameLogic.lastMovePiece = selectedBoardCell.getPiece();
-            GameLogic.lastMoveBoardCell = selectedBoardCell;
-            GameLogic.lastRemovedPiece = clickedBoardCell.getPiece();
+            
+        	updateLastMoveData(selectedBoardCell,clickedBoardCell);
+            
             Piece selectedPiece = selectedBoardCell.getPiece();
             if(selectedPiece instanceof King) {
                 if(tryCastle((King)selectedPiece, clickedBoardCell)) {
@@ -307,6 +345,7 @@ public class GameLogic {
         if(rookCastleBoardCell.hasPiece() || clickedBoardCell.hasPiece()) {
             return false;
         }
+        updateLastMoveData(rook.getBoardCell(),rookCastleBoardCell);
         rook.movePiece(rookCastleBoardCell);
         king.movePiece(clickedBoardCell);
         return true;
@@ -334,9 +373,9 @@ public class GameLogic {
 
     void keyPressed(KeyEvent e) {
         if(e.getText().equals("r")) {
-            if(lastMoveBoardCell != null) {
+            if(lastMoveBoardCells.size()>0) {
                 System.err.println("reversing move");
-                reverseLastMove();
+                reverseLastMovePlayer();
                 toggleTurns();
             }else {
                 System.err.println("cannot reverse move");
